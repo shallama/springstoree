@@ -1,9 +1,8 @@
 package com.example.springstore.domain.dto.user;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import com.example.springstore.domain.dto.address.AddressDto;
+import com.example.springstore.domain.entity.Address;
+import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
 @Value
@@ -13,7 +12,8 @@ import lombok.extern.jackson.Jacksonized;
 public class UserInfoDto {
     private String firstName;
     private String lastName;
-    private String role;
     private String email;
     private String phone;
+    private String role;
+    private AddressDto address;
 }

@@ -1,9 +1,6 @@
 package com.example.springstore.domain.dto.user;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Value;
+import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 import org.apache.tomcat.jni.Address;
 

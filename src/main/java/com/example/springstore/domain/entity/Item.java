@@ -8,17 +8,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import java.util.UUID;
 
-
 @Entity
 @Getter
 @Setter
-public class User extends BaseEntity {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private String role;
+public class Item extends BaseEntity {
+    private String itemName;
     @OneToOne
-    @JoinColumn(name = "addressId")
-    private Address address;
+    @JoinColumn(name = "groupId")
+    private ItemGroup itemGroup;
+    private String price;
+    private String description;
+    private Boolean availability;
 }
