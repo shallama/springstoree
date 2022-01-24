@@ -1,17 +1,28 @@
 package com.example.springstore.controller;
 
+import com.example.springstore.domain.dto.address.AddressCreateDto;
+import com.example.springstore.domain.dto.address.AddressDto;
+import com.example.springstore.domain.dto.address.AddressUpdateDto;
+import com.example.springstore.domain.dto.review.ReviewDto;
 import com.example.springstore.domain.dto.user.UserCreateDto;
 import com.example.springstore.domain.dto.user.UserDto;
 import com.example.springstore.domain.dto.user.UserInfoDto;
 import com.example.springstore.domain.dto.user.UserUpdateDto;
+import com.example.springstore.domain.entity.Address;
+import com.example.springstore.domain.entity.User;
 import com.example.springstore.domain.exeption.UserNotFoundException;
+import com.example.springstore.domain.mapper.AddressMapper;
+import com.example.springstore.domain.mapper.ReviewMapper;
 import com.example.springstore.domain.mapper.UserMapper;
+import com.example.springstore.service.AddressService;
+import com.example.springstore.service.ReviewService;
 import com.example.springstore.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,16 +33,25 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(path = "users")
 @RequiredArgsConstructor
 public class UserController {
-    private UserMapper userMapper;
-    private UserService userService;
-
+    @Autowired
+    private final UserMapper userMapper;
+    @Autowired
+    private final UserService userService;
+    @Autowired
+    private final AddressMapper addressMapper;
+    @Autowired
+    private final AddressService addressService;
+    @Autowired
+    private final ReviewService reviewService;
+    @Autowired
+    private final ReviewMapper reviewMapper;
     /**
      * Return user on JSON format
      *
      * @param id user id
      * @return user on JSON format
      */
-    //path = http://localhost:8080/api/v1.0/users
+
     @SneakyThrows
     @GetMapping("/{userId}")
     public UserDto get(@PathVariable(name = "userId") UUID id) {
@@ -76,27 +96,49 @@ public class UserController {
         userService.delete(id);
     }
 
-   /* @GetMapping("/{userId}/addresses/{addressId}")
+
+    @GetMapping("/{userId}/addresses/{addressId}")
     public AddressDto getAddress(@PathVariable UUID userId, @PathVariable UUID addressId) {
-        return null;
+        return Optional.of(addressId)
+                .map(addressService::get)
+                .map(addressMapper::toDto)
+                .orElseThrow();
     }
 
     @PostMapping("/{userId}/addresses")
+    @ResponseStatus(value = OK)
     public AddressDto assignAddress(@PathVariable UUID userId, @RequestBody AddressCreateDto createDto) {
-//        final Address address = mapper.toDto(createDto);
-//        return service.assignAddress(userId, address);
-        return null;
-    }
 
-    @PatchMapping("/{userId}/addresses/{addressId}")
-    public AddressDto updateAddress(@PathVariable UUID userId, @PathVariable UUID addressId, @RequestBody AddressUpdateDto createDto) {
-        return null;
+        return Optional.ofNullable(createDto)
+                .map(addressMapper::fromCreateDto)
+                .map(toSave -> userService.assignAddress(userId, toSave))
+                .map(addressMapper::toDto)
+                .orElseThrow();
     }
 
     @DeleteMapping("/{userId}/addresses/{addressId}")
-    public AddressDto deleteAddress(@PathVariable UUID userId, @PathVariable UUID addressId) {
-        return null;
-    }*/
+    public User deleteAddress(@PathVariable UUID userId, @PathVariable UUID addressId) {
+        return userService.deleteAddress(userId, addressId);
+    }
+
+    @PatchMapping("/{userId}/addresses/{addressId}")
+    @ResponseStatus(value = OK)
+    public AddressDto updateAddress(@PathVariable UUID userId, @PathVariable UUID addressId, @RequestBody AddressUpdateDto updateDto){
+        return Optional.ofNullable(updateDto)
+                .map(addressMapper::fromUpdateDto)
+                .map(current -> userService.updateAddress(userId, addressId, current))
+                .map(addressMapper::toDto)
+                .orElseThrow();
+    }
+
+    @SneakyThrows
+    @GetMapping("/{userId}/reviews")
+    public List<ReviewDto> getReviewsByUser(@PathVariable(name = "userId") UUID userId){
+        return Optional.of(userId)
+                .map(reviewService::getReviewsByUser)
+                .map(reviewMapper::listToDto)
+                .orElseThrow();
+    }
 
     /*@PatchMapping("/redirect/{userId}")
     public ModelAndView redirect(@PathVariable(name = "userId") UUID id, @RequestBody UserUpdateDto updateDto) {
@@ -106,6 +148,6 @@ public class UserController {
     @PatchMapping("/forward/{userId}")
     public ModelAndView forward() {
         return new ModelAndView("forward:/users/{userId}");
-    }
-*/
+    }*/
+
 }
