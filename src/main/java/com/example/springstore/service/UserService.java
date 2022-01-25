@@ -13,6 +13,5 @@ public interface UserService {
     User update(UUID id, User user);
     void delete(UUID id);
     Address assignAddress(UUID id, Address addressId);
-    Address updateAddress(UUID userId, UUID addressId, Address address);
-    User deleteAddress(UUID userId, UUID addressId);
+    Address updateAddress(UUID userId, Address address);
 }

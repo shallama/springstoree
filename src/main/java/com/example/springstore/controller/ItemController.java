@@ -7,6 +7,7 @@ import com.example.springstore.domain.dto.item.ItemUpdateDto;
 import com.example.springstore.domain.dto.review.ReviewCreateDto;
 import com.example.springstore.domain.dto.review.ReviewDto;
 import com.example.springstore.domain.entity.Item;
+import com.example.springstore.domain.exeption.ItemNotFoundException;
 import com.example.springstore.domain.mapper.ItemMapper;
 import com.example.springstore.domain.mapper.ReviewMapper;
 import com.example.springstore.service.ItemService;
@@ -16,6 +17,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -43,7 +45,7 @@ public class ItemController {
         return Optional.of(itemId)
                 .map(itemService::get)
                 .map(itemMapper::toDto)
-                .orElseThrow();
+                .orElseThrow(() -> new ItemNotFoundException(itemId));
     }
 
     @SneakyThrows
@@ -68,7 +70,7 @@ public class ItemController {
     @SneakyThrows
     @PostMapping
     @ResponseStatus(value = OK)
-    public ItemDto create(@RequestBody ItemCreateDto createDto){
+    public ItemDto create(@Valid @RequestBody ItemCreateDto createDto){
         UUID groupId = createDto.getGroupId();
         return Optional.ofNullable(createDto)
                 .map(itemMapper::fromCreateDto)
@@ -97,7 +99,7 @@ public class ItemController {
 
     @SneakyThrows
     @PostMapping("/{itemId}/reviews")
-    public ReviewDto createReview(@PathVariable(name = "itemId") UUID itemId, @RequestBody ReviewCreateDto createDto){
+    public ReviewDto createReview(@Valid @PathVariable(name = "itemId") UUID itemId, @RequestBody ReviewCreateDto createDto){
         return Optional.ofNullable(createDto)
                 .map(reviewMapper::fromCreateDto)
                 .map(current -> reviewService.create(itemId,

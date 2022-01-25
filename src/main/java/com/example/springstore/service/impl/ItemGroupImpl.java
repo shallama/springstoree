@@ -1,6 +1,7 @@
 package com.example.springstore.service.impl;
 
 import com.example.springstore.domain.entity.ItemGroup;
+import com.example.springstore.domain.exeption.ItemGroupNotFoundException;
 import com.example.springstore.domain.mapper.ItemGroupMapper;
 import com.example.springstore.repository.ItemGroupRepository;
 import com.example.springstore.service.ItemGroupService;
@@ -23,7 +24,7 @@ public class ItemGroupImpl implements ItemGroupService {
 
     @Override
     public ItemGroup get(UUID id) {
-        return itemGroupRepository.findById(id).orElseThrow();
+        return itemGroupRepository.findById(id).orElseThrow(() -> new ItemGroupNotFoundException(id));
     }
 
     @Override

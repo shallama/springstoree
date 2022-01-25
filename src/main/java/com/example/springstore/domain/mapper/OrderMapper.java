@@ -14,13 +14,11 @@ public interface OrderMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "item", ignore = true)
-    @Mapping(target = "address", ignore = true)
     Order fromCreateDto(OrderCreateDto source);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "item", ignore = true)
-    @Mapping(target = "address", ignore = true)
     @Mapping(target = "itemCount", ignore = true)
     @Mapping(target = "orderDate", ignore = true)
     @Mapping(target = "orderAmount", ignore = true)
@@ -28,7 +26,6 @@ public interface OrderMapper {
 
     @Mapping(target = "userId", source = "user.id")
     @Mapping(target = "itemId", source = "item.id")
-    @Mapping(target = "addressId", source = "address.id")
     OrderDto toDto(Order source);
 
     OrderInfoDto toInfoDto(Order source);

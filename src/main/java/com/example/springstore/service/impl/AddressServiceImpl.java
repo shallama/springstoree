@@ -1,6 +1,7 @@
 package com.example.springstore.service.impl;
 
 import com.example.springstore.domain.entity.Address;
+import com.example.springstore.domain.exeption.AddressNotFoundException;
 import com.example.springstore.domain.mapper.AddressMapper;
 import com.example.springstore.repository.AddressRepository;
 import com.example.springstore.service.AddressService;
@@ -24,7 +25,7 @@ public class AddressServiceImpl implements AddressService {
     @SneakyThrows
     @Override
     public Address get(UUID id) {
-        return addressRepository.findById(id).orElseThrow();
+        return addressRepository.findById(id).orElseThrow(() -> new AddressNotFoundException(id));
     }
 
     @SneakyThrows

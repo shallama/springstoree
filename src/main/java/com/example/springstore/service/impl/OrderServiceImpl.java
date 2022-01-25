@@ -1,6 +1,7 @@
 package com.example.springstore.service.impl;
 
 import com.example.springstore.domain.entity.Address;
+import com.example.springstore.domain.entity.BaseEntity;
 import com.example.springstore.domain.entity.Order;
 import com.example.springstore.domain.exeption.OrderCantDeleteException;
 import com.example.springstore.domain.mapper.OrderMapper;
@@ -33,6 +34,8 @@ public class OrderServiceImpl implements OrderService {
     private final ItemService itemService;
     @Autowired
     private final AddressService addressService;
+    @Autowired
+    private final SimpleDateFormat dateFormat;
 
     @SneakyThrows
     @Override
@@ -41,17 +44,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order create(Order order, UUID userId, UUID itemId, UUID addressId) {
+    public Order create(Order order, UUID userId, UUID itemId) {
         order.setUser(userService.get(userId));
         order.setItem(itemService.get(itemId));
-        order.setAddress(addressService.get(addressId));
         return orderRepository.save(order);
     }
-
-    /*private Order changeVersion(Order order){
-        //order.setVersion(order.getVersion() + 1);
-        return order;
-    }*/
 
     @SneakyThrows
     @Override
@@ -59,14 +56,12 @@ public class OrderServiceImpl implements OrderService {
         return Optional.of(id)
                 .map(this::get)
                 .map(current -> orderMapper.merge(current, order))
-                //.map(this::changeVersion)
                 .map(orderRepository::save)
                 .orElseThrow();
     }
 
     @SneakyThrows
     private Long getHoursNum(String date) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd.MM.yyyy");
         Date date1 = dateFormat.parse(date);
         Date date2 = new Date();
         long diff = date2.getTime() - date1.getTime();

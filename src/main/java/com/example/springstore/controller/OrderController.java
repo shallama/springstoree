@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.swing.text.html.Option;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,13 +71,12 @@ public class OrderController {
     @SneakyThrows
     @PostMapping
     @ResponseStatus(value = OK)
-    public OrderDto create(@RequestBody OrderCreateDto createDto){
+    public OrderDto create(@Valid @RequestBody OrderCreateDto createDto){
         UUID userId = createDto.getUserId();
         UUID itemId = createDto.getItemId();
-        UUID addressId = createDto.getAddressId();
         return Optional.ofNullable(createDto)
                 .map(orderMapper::fromCreateDto)
-                .map(current -> orderService.create(current, userId, itemId, addressId))
+                .map(current -> orderService.create(current, userId, itemId))
                 .map(orderMapper::toDto)
                 .orElseThrow();
     }

@@ -9,7 +9,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Address extends BaseEntity {
-    //private String city;
+    private String city;
     private String street;
     private String houseNum;
     private String country;

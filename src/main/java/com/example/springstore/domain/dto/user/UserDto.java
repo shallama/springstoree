@@ -17,5 +17,4 @@ public class UserDto {
     private String phone;
     private String role;
     private UUID addressId;
-    private Integer version;
 }

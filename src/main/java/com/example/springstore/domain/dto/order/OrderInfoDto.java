@@ -19,7 +19,6 @@ public class OrderInfoDto {
     private UUID id;
     private User user;
     private Item item;
-    private Address address;
     private Integer itemCount;
     private String orderDate;
     private String orderStatus;

@@ -17,9 +17,6 @@ public class Order extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "itemId")
     private Item item;
-    @ManyToOne
-    @JoinColumn(name = "addressId")
-    private Address address;
     private Integer itemCount;
     private String orderDate;
     //status can be of three types: 1)preparation 2)readyToSend 3)sent

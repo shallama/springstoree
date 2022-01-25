@@ -3,6 +3,7 @@ package com.example.springstore.controller;
 import com.example.springstore.domain.dto.itemgroup.ItemGroupCreateDto;
 import com.example.springstore.domain.dto.itemgroup.ItemGroupDto;
 import com.example.springstore.domain.dto.itemgroup.ItemGroupUpdateDto;
+import com.example.springstore.domain.exeption.ItemGroupNotFoundException;
 import com.example.springstore.domain.mapper.ItemGroupMapper;
 import com.example.springstore.service.ItemGroupService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -31,13 +33,13 @@ public class ItemGroupController {
         return Optional.of(id)
                 .map(groupService::get)
                 .map(groupMapper::toDto)
-                .orElseThrow();
+                .orElseThrow(() -> new ItemGroupNotFoundException(id));
     }
 
     @SneakyThrows
     @PostMapping
     @ResponseStatus(value = OK)
-    public ItemGroupDto create(@RequestBody ItemGroupCreateDto createDto){
+    public ItemGroupDto create(@Valid @RequestBody ItemGroupCreateDto createDto){
         return Optional.ofNullable(createDto)
                 .map(groupMapper::fromCreateDto)
                 .map(groupService::create)
