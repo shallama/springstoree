@@ -22,6 +22,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -45,6 +46,7 @@ public class UserController {
     private final ReviewService reviewService;
     @Autowired
     private final ReviewMapper reviewMapper;
+
     /**
      * Return user on JSON format
      *
@@ -72,7 +74,7 @@ public class UserController {
 
     @PostMapping
     @ResponseStatus(value = OK)
-    public UserDto create(@RequestBody UserCreateDto createDto) {
+    public UserDto create(@Valid @RequestBody UserCreateDto createDto) {
         return Optional.ofNullable(createDto)
                 .map(userMapper::fromCreateDto)
                 .map(userService::create)
@@ -96,15 +98,6 @@ public class UserController {
         userService.delete(id);
     }
 
-
-    @GetMapping("/{userId}/addresses/{addressId}")
-    public AddressDto getAddress(@PathVariable UUID userId, @PathVariable UUID addressId) {
-        return Optional.of(addressId)
-                .map(addressService::get)
-                .map(addressMapper::toDto)
-                .orElseThrow();
-    }
-
     @PostMapping("/{userId}/addresses")
     @ResponseStatus(value = OK)
     public AddressDto assignAddress(@PathVariable UUID userId, @RequestBody AddressCreateDto createDto) {
@@ -116,17 +109,12 @@ public class UserController {
                 .orElseThrow();
     }
 
-    @DeleteMapping("/{userId}/addresses/{addressId}")
-    public User deleteAddress(@PathVariable UUID userId, @PathVariable UUID addressId) {
-        return userService.deleteAddress(userId, addressId);
-    }
-
-    @PatchMapping("/{userId}/addresses/{addressId}")
+    @PatchMapping("/{userId}/addresses/")
     @ResponseStatus(value = OK)
     public AddressDto updateAddress(@PathVariable UUID userId, @PathVariable UUID addressId, @RequestBody AddressUpdateDto updateDto){
         return Optional.ofNullable(updateDto)
                 .map(addressMapper::fromUpdateDto)
-                .map(current -> userService.updateAddress(userId, addressId, current))
+                .map(current -> userService.updateAddress(userId, current))
                 .map(addressMapper::toDto)
                 .orElseThrow();
     }

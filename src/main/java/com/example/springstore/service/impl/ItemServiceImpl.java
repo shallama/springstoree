@@ -2,6 +2,7 @@ package com.example.springstore.service.impl;
 
 import com.example.springstore.domain.entity.Item;
 import com.example.springstore.domain.entity.ItemGroup;
+import com.example.springstore.domain.exeption.ItemNotFoundException;
 import com.example.springstore.domain.mapper.ItemMapper;
 import com.example.springstore.repository.ItemRepository;
 import com.example.springstore.service.ItemGroupService;
@@ -28,7 +29,7 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item get(UUID id) {
-        return itemRepository.findById(id).orElseThrow();
+        return itemRepository.findById(id).orElseThrow(() -> new ItemNotFoundException(id));
     }
 
     @Override

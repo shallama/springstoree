@@ -68,25 +68,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Address updateAddress(UUID userId, UUID addressId, Address address) {
+    public Address updateAddress(UUID userId, Address address) {
         User user = get(userId);
-        if (user.getAddress() == null){
+        Address oldAddress = user.getAddress();
+        if (oldAddress == null){
             // because my AddressCreateDto and AddressUpdateDto are same
             return assignAddress(userId, address);
         }
-        return addressService.update(addressId, address);
+        return addressService.update(oldAddress.getId(), address);
     }
 
-    @Override
-    public User deleteAddress(UUID userId, UUID addressId) {
-        User user = get(userId);
-        if (user.getAddress() != null) {
-            user.setAddress(null);
-            update(userId, user);
-        }
-        //I think we shouldn't delete address, because we use it in order
-        //but we can delete from AddressController
-        //addressService.delete(addressId);
-        return user;
-    }
 }

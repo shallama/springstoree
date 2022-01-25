@@ -3,6 +3,7 @@ package com.example.springstore.service.impl;
 import com.example.springstore.domain.entity.Review;
 import com.example.springstore.domain.exeption.OrderCantDeleteException;
 import com.example.springstore.domain.exeption.ReviewCantUpdateException;
+import com.example.springstore.domain.exeption.ReviewNotFoundException;
 import com.example.springstore.domain.mapper.ReviewMapper;
 import com.example.springstore.repository.ReviewRepository;
 import com.example.springstore.service.ItemService;
@@ -33,11 +34,13 @@ public class ReviewServiceImpl implements ReviewService {
     private final ItemService itemService;
     @Autowired
     private final UserService userService;
+    @Autowired
+    private final SimpleDateFormat dateFormat;
 
     @SneakyThrows
     @Override
     public Review get(UUID id) {
-        return reviewRepository.findById(id).orElseThrow();
+        return reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(id));
     }
 
     @Override
@@ -49,18 +52,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @SneakyThrows
     private Long checkDate(String date) throws ParseException {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm dd.MM.yyyy");
         Date date1 = dateFormat.parse(date);
         Date date2 = new Date();
         long diff = date2.getTime() - date1.getTime();
         long hours = TimeUnit.MILLISECONDS.toHours(diff);
         return hours;
     }
-    /*public Review saving(Review review){
-        reviewRepository.save(review);
-        review.setVersion(review.getVersion() + 1);
-        return reviewRepository.save(review);
-    }*/
+
     @SneakyThrows
     @Override
     public Review update(UUID id, Review review) {
@@ -71,7 +69,7 @@ public class ReviewServiceImpl implements ReviewService {
                     .map(reviewRepository::save)
                     .orElseThrow();
         else
-            throw new ReviewCantUpdateException();
+            return null;
     }
 
     @Override
