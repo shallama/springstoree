@@ -18,6 +18,7 @@ public class User extends BaseEntity {
     private String email;
     private String phone;
     private String role;
+    private String pwd;
     @OneToOne
     @JoinColumn(name = "addressId")
     private Address address;

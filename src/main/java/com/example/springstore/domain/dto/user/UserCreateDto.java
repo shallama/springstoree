@@ -15,12 +15,13 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserCreateDto {
     @NotBlank
-    private String firstName;
+    String firstName;
     @NotBlank
-    private String lastName;
+    String lastName;
     @Email
     @NotBlank
-    private String email;
-    private String phone;
-    private String role;
+    String email;
+    String phone;
+    String role;
+    String pwd;
 }

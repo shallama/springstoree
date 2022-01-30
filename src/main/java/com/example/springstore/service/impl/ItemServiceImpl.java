@@ -11,20 +11,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
 @Service
-@Primary
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
-    @Autowired
+
     private final ItemRepository itemRepository;
-    @Autowired
     private final ItemMapper itemMapper;
-    @Autowired
     private final ItemGroupService groupService;
 
     @Override
@@ -33,12 +33,15 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Item create(UUID groupId, Item item) {
         ItemGroup customItemGroup = groupService.get(groupId);
         item.setItemGroup(customItemGroup);
         return itemRepository.save(item);
     }
+
     @Override
+    @Transactional
     public Item update(UUID id, Item item) {
         return Optional.of(id)
                 .map(this::get)
@@ -48,6 +51,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public void delete(UUID id) {
         itemRepository.deleteById(id);
     }
@@ -55,13 +59,5 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<Item> getItemsByGroup(UUID groupId) {
         return itemRepository.findAllByItemGroup(groupService.get(groupId));
-        /*List<Item> resItems = new ArrayList<>();
-        List<Item> items = itemRepository.findAll();
-        for(Item item : items){
-            ItemGroup group = item.getItemGroup();
-            if (group.getId().equals(groupId))
-                resItems.add(item);
-        }
-        return resItems;*/
     }
 }

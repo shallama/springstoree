@@ -14,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemGroupCreateDto {
     @NotBlank
-    private String groupName;
+    String groupName;
     @NotBlank
-    private String description;
+    String description;
 }

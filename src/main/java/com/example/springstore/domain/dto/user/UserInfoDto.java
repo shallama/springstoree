@@ -10,10 +10,10 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserInfoDto {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private String role;
-    private AddressDto address;
+    String firstName;
+    String lastName;
+    String email;
+    String phone;
+    String role;
+    AddressDto address;
 }

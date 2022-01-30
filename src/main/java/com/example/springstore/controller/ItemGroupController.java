@@ -19,15 +19,13 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
 
 @RestController
-@RequestMapping(path = "itemgroups")
+@RequestMapping(path = "item-groups")
 @RequiredArgsConstructor
 public class ItemGroupController {
-    @Autowired
+
     private final ItemGroupService groupService;
-    @Autowired
     private final ItemGroupMapper groupMapper;
 
-    @SneakyThrows
     @GetMapping("/{groupId}")
     public ItemGroupDto get(@PathVariable(name = "groupId") UUID id){
         return Optional.of(id)
@@ -36,9 +34,7 @@ public class ItemGroupController {
                 .orElseThrow(() -> new ItemGroupNotFoundException(id));
     }
 
-    @SneakyThrows
     @PostMapping
-    @ResponseStatus(value = OK)
     public ItemGroupDto create(@Valid @RequestBody ItemGroupCreateDto createDto){
         return Optional.ofNullable(createDto)
                 .map(groupMapper::fromCreateDto)
@@ -47,9 +43,7 @@ public class ItemGroupController {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @PatchMapping("/{groupId}")
-    @ResponseStatus(value = OK)
     public ItemGroupDto update(@PathVariable(name = "groupId") UUID id,
                                 @RequestBody ItemGroupUpdateDto updateDto){
         return Optional.ofNullable(updateDto)
@@ -60,7 +54,6 @@ public class ItemGroupController {
     }
 
     @DeleteMapping("/{groupId}")
-    @ResponseStatus(value = NO_CONTENT)
     public void delete(@PathVariable(name = "groupId") UUID id){
         groupService.delete(id);
     }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,12 +22,10 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(path = "addresses")
 @RequiredArgsConstructor
 public class AddressController {
-    @Autowired
+
     private final AddressService addressService;
-    @Autowired
     private final AddressMapper addressMapper;
 
-    @SneakyThrows
     @GetMapping("/{addressId}")
     public AddressDto get(@PathVariable(name = "addressId") UUID id)
     {
@@ -36,7 +35,6 @@ public class AddressController {
                 .orElseThrow(() -> new AddressNotFoundException(id));
     }
 
-    @SneakyThrows
     @PatchMapping("/{addressId}")
     @ResponseStatus(value = OK)
     public AddressDto update(@Valid @PathVariable(name = "addressId") UUID id, @RequestBody AddressUpdateDto updateDto){
@@ -45,5 +43,10 @@ public class AddressController {
                 .map(toUpdate -> addressService.update(id, toUpdate))
                 .map(addressMapper::toDto)
                 .orElseThrow();
+    }
+    @GetMapping("/mow")
+    public LocalDate getTime(){
+        LocalDate date = LocalDate.now();
+        return date;
     }
 }

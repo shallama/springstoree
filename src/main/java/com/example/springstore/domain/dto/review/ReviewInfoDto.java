@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Value
@@ -15,10 +16,10 @@ import java.util.UUID;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewInfoDto {
-    private UUID id;
-    private Item item;
-    private User User;
-    private String reviewDate;
-    private String comment;
-    private Integer itemRate;
+    UUID id;
+    Item item;
+    User User;
+    LocalDate reviewDate;
+    String comment;
+    Integer itemRate;
 }

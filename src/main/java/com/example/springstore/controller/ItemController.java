@@ -30,16 +30,12 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(path = "items")
 @RequiredArgsConstructor
 public class ItemController {
-    @Autowired
+
     private final ItemService itemService;
-    @Autowired
     private final ItemMapper itemMapper;
-    @Autowired
     private final ReviewService reviewService;
-    @Autowired
     private final ReviewMapper reviewMapper;
 
-    @SneakyThrows
     @GetMapping("/{itemId}")
     public ItemDto get(@PathVariable(name = "itemId") UUID itemId){
         return Optional.of(itemId)
@@ -48,7 +44,6 @@ public class ItemController {
                 .orElseThrow(() -> new ItemNotFoundException(itemId));
     }
 
-    @SneakyThrows
     @GetMapping("/info/{itemId}")
     public ItemInfoDto getInfo(@PathVariable(name = "itemId") UUID id){
         return Optional.of(id)
@@ -57,7 +52,6 @@ public class ItemController {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @GetMapping("/group/{groupId}")
     public List<ItemDto> getByGroup(@PathVariable(name = "groupId") UUID groupId){
         return Optional.of(groupId)
@@ -66,10 +60,7 @@ public class ItemController {
                 .orElseThrow();
     }
 
-
-    @SneakyThrows
     @PostMapping
-    @ResponseStatus(value = OK)
     public ItemDto create(@Valid @RequestBody ItemCreateDto createDto){
         UUID groupId = createDto.getGroupId();
         return Optional.ofNullable(createDto)
@@ -78,9 +69,8 @@ public class ItemController {
                 .map(itemMapper::toDto)
                 .orElseThrow();
     }
-    @SneakyThrows
+
     @PatchMapping("/{itemId}")
-    @ResponseStatus(value = OK)
     public ItemDto update(@PathVariable (name = "itemId") UUID id,
                             @RequestBody ItemUpdateDto updateDto){
         return Optional.ofNullable(updateDto)
@@ -90,14 +80,11 @@ public class ItemController {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @DeleteMapping("/{itemId}")
-    @ResponseStatus(value = NO_CONTENT)
     public void delete(@PathVariable (name = "itemId") UUID id){
         itemService.delete(id);
     }
 
-    @SneakyThrows
     @PostMapping("/{itemId}/reviews")
     public ReviewDto createReview(@Valid @PathVariable(name = "itemId") UUID itemId, @RequestBody ReviewCreateDto createDto){
         return Optional.ofNullable(createDto)
@@ -108,7 +95,6 @@ public class ItemController {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @GetMapping("/{itemId}/reviews")
     public List<ReviewDto> getReviewsByItemId(@PathVariable(name = "itemId") UUID id){
         return Optional.of(id)

@@ -27,12 +27,10 @@ import static org.springframework.http.HttpStatus.OK;
 @RequiredArgsConstructor
 @RequestMapping("/orders")
 public class OrderController {
-    @Autowired
+
     private final OrderService orderService;
-    @Autowired
     private final OrderMapper orderMapper;
 
-    @SneakyThrows
     @GetMapping("/{orderId}")
     public OrderDto get(@PathVariable(name = "orderId") UUID id){
         return Optional.of(id)
@@ -41,7 +39,6 @@ public class OrderController {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @GetMapping("/info/{orderId}")
     public OrderInfoDto getInfo(@PathVariable(name = "orderId") UUID id){
         return Optional.of(id)
@@ -50,7 +47,6 @@ public class OrderController {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @GetMapping("/user/{userId}")
     public List<OrderDto> getOrdersByUserId(@PathVariable(name = "userId") UUID userId){
         return Optional.of(userId)
@@ -59,7 +55,6 @@ public class OrderController {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @GetMapping("/user/{itemId}")
     public List<OrderDto> getOrdersByItemId(@PathVariable(name = "itemId") UUID itemId){
         return Optional.of(itemId)
@@ -68,9 +63,7 @@ public class OrderController {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @PostMapping
-    @ResponseStatus(value = OK)
     public OrderDto create(@Valid @RequestBody OrderCreateDto createDto){
         UUID userId = createDto.getUserId();
         UUID itemId = createDto.getItemId();
@@ -81,9 +74,7 @@ public class OrderController {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @PatchMapping("/{orderId}")
-    @ResponseStatus(value = OK)
     public OrderDto update(@PathVariable(name = "orderId") UUID id,
                                 @RequestBody OrderUpdateDto updateDto){
         return Optional.ofNullable(updateDto)
@@ -92,9 +83,8 @@ public class OrderController {
                 .map(orderMapper::toDto)
                 .orElseThrow();
     }
-    @SneakyThrows
+
     @DeleteMapping("/{orderId}")
-    @ResponseStatus(value = NO_CONTENT)
     public void delete(@PathVariable(name = "orderId") UUID id){
         orderService.delete(id);
     }

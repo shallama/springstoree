@@ -14,13 +14,13 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AddressCreateDto {
     @NotBlank
-    private String city;
+    String city;
     @NotBlank
-    private String street;
+    String street;
     @NotBlank
-    private String houseNum;
+    String houseNum;
     @NotBlank
-    private String country;
+    String country;
     @NotBlank
-    private String addressIndex;
+    String addressIndex;
 }

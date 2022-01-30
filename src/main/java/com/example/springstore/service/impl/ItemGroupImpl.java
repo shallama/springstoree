@@ -9,17 +9,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Primary
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ItemGroupImpl implements ItemGroupService {
-    @Autowired
+
     private final ItemGroupRepository itemGroupRepository;
-    @Autowired
     private final ItemGroupMapper itemGroupMapper;
 
     @Override
@@ -28,11 +28,13 @@ public class ItemGroupImpl implements ItemGroupService {
     }
 
     @Override
+    @Transactional
     public ItemGroup create(ItemGroup itemGroup) {
         return itemGroupRepository.save(itemGroup);
     }
 
     @Override
+    @Transactional
     public ItemGroup update(UUID id, ItemGroup itemGroup) {
         return Optional.of(id)
                 .map(this::get)
@@ -42,6 +44,7 @@ public class ItemGroupImpl implements ItemGroupService {
     }
 
     @Override
+    @Transactional
     public void delete(UUID id) {
         itemGroupRepository.deleteById(id);
     }

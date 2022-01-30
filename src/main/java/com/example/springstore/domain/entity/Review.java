@@ -6,6 +6,7 @@ import lombok.Setter;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -17,7 +18,7 @@ public class Review extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
-    private String reviewDate;
+    private LocalDate reviewDate;
     private String comment;
     private Integer itemRate;
 }

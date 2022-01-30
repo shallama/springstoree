@@ -10,11 +10,11 @@ import java.util.UUID;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserDto {
-    private UUID id;
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String phone;
-    private String role;
-    private UUID addressId;
+    UUID id;
+    String firstName;
+    String lastName;
+    String email;
+    String phone;
+    String role;
+    UUID addressId;
 }

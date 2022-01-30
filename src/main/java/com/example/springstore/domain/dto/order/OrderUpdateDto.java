@@ -11,6 +11,6 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderUpdateDto {
-    private String orderStatus;
-    private Boolean orderCompleteness;
+    String orderStatus;
+    Boolean orderCompleteness;
 }

@@ -17,12 +17,12 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemCreateDto {
     @NotBlank
-    private String itemName;
+    String itemName;
     @NotNull
-    private UUID groupId;
+    UUID groupId;
     @NotBlank
-    private String price;
+    String price;
     @NotBlank
-    private String description;
-    private Boolean availability;
+    String description;
+    Boolean availability;
 }

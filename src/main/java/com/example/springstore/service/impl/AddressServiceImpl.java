@@ -10,33 +10,32 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
+
 @Service
-@Primary
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class AddressServiceImpl implements AddressService {
-    @Autowired
+
     private final AddressRepository addressRepository;
-    @Autowired
     private final AddressMapper addressMapper;
 
-    @SneakyThrows
     @Override
     public Address get(UUID id) {
         return addressRepository.findById(id).orElseThrow(() -> new AddressNotFoundException(id));
     }
 
-    @SneakyThrows
     @Override
+    @Transactional
     public Address create(Address address) {
         return addressRepository.save(address);
     }
 
-
-    @SneakyThrows
     @Override
+    @Transactional
     public Address update(UUID id, Address address) {
         return Optional.of(id)
                 .map(this::get)
@@ -45,8 +44,8 @@ public class AddressServiceImpl implements AddressService {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @Override
+    @Transactional
     public void delete(UUID id) {
         addressRepository.deleteById(id);
     }
