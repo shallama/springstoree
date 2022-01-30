@@ -21,6 +21,7 @@ public class Order extends BaseEntity {
     private Item item;
     private Integer itemCount;
     private LocalDate orderDate;
+    @Enumerated(EnumType.STRING)
     private Status orderStatus;
     private Boolean orderCompleteness;
     private Integer amount;
