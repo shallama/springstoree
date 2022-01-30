@@ -6,9 +6,8 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Value
@@ -16,13 +15,14 @@ import java.util.UUID;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewCreateDto {
-    private UUID itemId;
+    UUID itemId;
     @NotNull
-    private UUID userId;
+    UUID userId;
+    @NotNull
+    LocalDate reviewDate;
     @NotBlank
-    private String reviewDate;
-    @NotBlank
-    private String comment;
-    @Size(min = 1, max = 5)
-    private Integer itemRate;
+    String comment;
+    @Min(value = 1)
+    @Max(value = 5)
+    Integer itemRate;
 }

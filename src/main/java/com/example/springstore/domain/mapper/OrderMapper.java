@@ -21,7 +21,7 @@ public interface OrderMapper {
     @Mapping(target = "item", ignore = true)
     @Mapping(target = "itemCount", ignore = true)
     @Mapping(target = "orderDate", ignore = true)
-    @Mapping(target = "orderAmount", ignore = true)
+    @Mapping(target = "amount", ignore = true)
     Order fromUpdateDto(OrderUpdateDto source);
 
     @Mapping(target = "userId", source = "user.id")

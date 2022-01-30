@@ -14,65 +14,60 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 @Service
-@Primary
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReviewServiceImpl implements ReviewService {
-    @Autowired
-    private final ReviewMapper reviewMapper;
-    @Autowired
-    private final ReviewRepository reviewRepository;
-    @Autowired
-    private final ItemService itemService;
-    @Autowired
-    private final UserService userService;
-    @Autowired
-    private final SimpleDateFormat dateFormat;
 
-    @SneakyThrows
+    private final ReviewMapper reviewMapper;
+    private final ReviewRepository reviewRepository;
+    private final ItemService itemService;
+    private final UserService userService;
+
     @Override
     public Review get(UUID id) {
         return reviewRepository.findById(id).orElseThrow(() -> new ReviewNotFoundException(id));
     }
 
     @Override
+    @Transactional
     public Review create(UUID itemId, UUID userId, Review review) {
         review.setItem(itemService.get(itemId));
         review.setUser(userService.get(userId));
         return reviewRepository.save(review);
     }
 
-    @SneakyThrows
-    private Long checkDate(String date) throws ParseException {
-        Date date1 = dateFormat.parse(date);
-        Date date2 = new Date();
-        long diff = date2.getTime() - date1.getTime();
-        long hours = TimeUnit.MILLISECONDS.toHours(diff);
-        return hours;
-    }
-
-    @SneakyThrows
     @Override
+    @Transactional
     public Review update(UUID id, Review review) {
-        if (checkDate(get(id).getReviewDate()) < 2)
+        LocalDate date = LocalDate.now();
+        Period period = Period.between(get(id).getReviewDate(), date);
+        Integer days = period.getDays();
+        if (days < 1){
             return Optional.of(id)
                     .map(this::get)
                     .map(current -> reviewMapper.merge(current, review))
                     .map(reviewRepository::save)
                     .orElseThrow();
-        else
+        }
+        else {
             return null;
+        }
     }
 
     @Override
+    @Transactional
     public void delete(UUID id) {
         reviewRepository.deleteById(id);
     }

@@ -14,44 +14,40 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@Primary
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class OrderServiceImpl implements OrderService {
-    @Autowired
-    private final OrderRepository orderRepository;
-    @Autowired
-    private final OrderMapper orderMapper;
-    @Autowired
-    private final UserServiceImpl userService;
-    @Autowired
-    private final ItemService itemService;
-    @Autowired
-    private final AddressService addressService;
-    @Autowired
-    private final SimpleDateFormat dateFormat;
 
-    @SneakyThrows
+    private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
+    private final UserServiceImpl userService;
+    private final ItemService itemService;
+
     @Override
     public Order get(UUID id) {
         return orderRepository.findById(id).orElseThrow();
     }
 
     @Override
+    @Transactional
     public Order create(Order order, UUID userId, UUID itemId) {
         order.setUser(userService.get(userId));
         order.setItem(itemService.get(itemId));
         return orderRepository.save(order);
     }
 
-    @SneakyThrows
     @Override
+    @Transactional
     public Order update(UUID id, Order order) {
         return Optional.of(id)
                 .map(this::get)
@@ -60,23 +56,23 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow();
     }
 
-    @SneakyThrows
-    private Long getHoursNum(String date) throws ParseException {
-        Date date1 = dateFormat.parse(date);
-        Date date2 = new Date();
-        long diff = date2.getTime() - date1.getTime();
-        long hours = TimeUnit.MILLISECONDS.toHours(diff);
-        return hours;
+    private Integer getHoursNum(LocalDate orderDate) {
+        LocalDate date = LocalDate.now();
+        Period period = Period.between(orderDate, date);
+        Integer days = period.getDays();
+        return days;
     }
 
-    @SneakyThrows
     @Override
+    @Transactional
     public void delete(UUID id) {
         Order order = get(id);
-        if (order.getOrderStatus().equals("preparation") && getHoursNum(order.getOrderDate()) < 24)
+        if (order.getOrderStatus().equals("preparation") && getHoursNum(order.getOrderDate()) < 1){
             orderRepository.deleteById(id);
-        else
+        }
+        else{
             throw new OrderCantDeleteException();
+        }
     }
 
     @Override

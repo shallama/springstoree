@@ -12,9 +12,10 @@ import java.util.UUID;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserUpdateDto {
-    private String firstName;
-    private String lastName;
+    String firstName;
+    String lastName;
     @Email
-    private String email;
-    private String phone;
+    String email;
+    String phone;
+    String pwd;
 }

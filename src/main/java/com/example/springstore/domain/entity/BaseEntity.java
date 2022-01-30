@@ -13,8 +13,9 @@ import java.util.UUID;
 @Getter
 @MappedSuperclass
 @Setter(value = AccessLevel.PRIVATE)
-public class BaseEntity {
+public abstract class BaseEntity {
     @Id
+    @Type(type="uuid-char")
     @GeneratedValue
     private UUID id;
 

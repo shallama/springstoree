@@ -12,21 +12,20 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
+
 @Service
-@Primary
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
-    @Autowired
+
     private final UserRepository userRepository;
-    @Autowired
     private final UserMapper userMapper;
-    @Autowired
     private final AddressService addressService;
 
-    @SneakyThrows
     @Override
     public User get(UUID id) {
         return userRepository.findById(id)
@@ -34,11 +33,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public User create(User user) {
         return userRepository.save(user);
     }
 
     @Override
+    @Transactional
     public User update(UUID id, User user) {
         return Optional.of(id)
                 .map(this::get)
@@ -46,33 +47,37 @@ public class UserServiceImpl implements UserService {
                 .map(userRepository::save)
                 .orElseThrow();
     }
+
     @Override
+    @Transactional
     public void delete(UUID id) {
         final User user = userRepository.findById(id).orElseThrow();
-        if (user.getAddress() != null)
+        if (user.getAddress() != null){
             addressService.delete(user.getAddress().getId());
+        }
         userRepository.delete(user);
     }
 
     @Override
+    @Transactional
     public Address assignAddress(UUID id, Address address) {
         User user = get(id);
         if (user.getAddress() == null){
-            Address address1 = addressService.create(address);
-            user.setAddress(address1);
+            Address createdAddress = addressService.create(address);
+            user.setAddress(createdAddress);
             update(id, user);
-            return address1;
+            return createdAddress;
         }
         Address oldAddress = user.getAddress();
         return addressService.update(oldAddress.getId(), address);
     }
 
     @Override
+    @Transactional
     public Address updateAddress(UUID userId, Address address) {
         User user = get(userId);
         Address oldAddress = user.getAddress();
         if (oldAddress == null){
-            // because my AddressCreateDto and AddressUpdateDto are same
             return assignAddress(userId, address);
         }
         return addressService.update(oldAddress.getId(), address);

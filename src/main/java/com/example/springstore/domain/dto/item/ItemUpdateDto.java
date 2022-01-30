@@ -14,9 +14,9 @@ import java.util.UUID;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemUpdateDto {
-    private String itemName;
-    private UUID groupId;
-    private String price;
-    private String description;
-    private Boolean availability;
+    String itemName;
+    UUID groupId;
+    String price;
+    String description;
+    Boolean availability;
 }

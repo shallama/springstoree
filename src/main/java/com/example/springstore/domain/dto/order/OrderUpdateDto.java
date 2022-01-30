@@ -1,5 +1,6 @@
 package com.example.springstore.domain.dto.order;
 
+import com.example.springstore.domain.entity.enums.Status;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,6 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderUpdateDto {
-    private String orderStatus;
-    private Boolean orderCompleteness;
+    Status orderStatus;
+    Boolean orderCompleteness;
 }

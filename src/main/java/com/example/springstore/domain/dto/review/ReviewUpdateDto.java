@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.util.UUID;
 
@@ -14,7 +16,8 @@ import java.util.UUID;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ReviewUpdateDto {
-    private String comment;
-    @Size(min = 1, max = 5)
-    private Integer itemRate;
+    String comment;
+    @Min(value = 1)
+    @Max(value = 100)
+    Integer itemRate;
 }

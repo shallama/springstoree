@@ -1,11 +1,10 @@
 package com.example.springstore.domain.entity;
 
+import com.example.springstore.domain.entity.enums.Role;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import java.util.UUID;
 
 
@@ -17,7 +16,9 @@ public class User extends BaseEntity {
     private String lastName;
     private String email;
     private String phone;
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private Role role;
+    private String pwd;
     @OneToOne
     @JoinColumn(name = "addressId")
     private Address address;

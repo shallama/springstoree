@@ -1,5 +1,6 @@
 package com.example.springstore.domain.dto.order;
 
+import com.example.springstore.domain.entity.enums.Status;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.*;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Value
@@ -15,17 +18,17 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderCreateDto {
     @NotNull
-    private UUID userId;
+    UUID userId;
     @NotNull
-    private UUID itemId;
-    @Size(min = 1, max = 100)
-    private Integer itemCount;
+    UUID itemId;
+    @Min(value = 1)
+    @Max(value = 100)
+    Integer itemCount;
+    @NotNull
+    LocalDate orderDate;
     @NotBlank
-    private String orderDate;
-    @NotBlank
-    private String orderStatus;
+    Status orderStatus;
     @AssertFalse
-    private Boolean orderCompleteness;
-    @Positive
-    private Double orderAmount;
+    Boolean orderCompleteness;
+    Integer amount;
 }

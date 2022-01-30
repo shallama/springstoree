@@ -22,12 +22,10 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @RequestMapping("/reviews")
 public class ReviewController {
-    @Autowired
+
     private final ReviewMapper reviewMapper;
-    @Autowired
     private final ReviewService reviewService;
 
-    @SneakyThrows
     @GetMapping("/{reviewId}")
     public ReviewDto get(@PathVariable(name = "reviewId") UUID id){
         return Optional.of(id)
@@ -35,7 +33,7 @@ public class ReviewController {
                 .map(reviewMapper::toDto)
                 .orElseThrow(() -> new ReviewNotFoundException(id));
     }
-    @SneakyThrows
+
     @PatchMapping("/{reviewId}")
     public ReviewDto update(@Valid @PathVariable(name = "reviewId")UUID id, @RequestBody ReviewUpdateDto updateDto){
         return Optional.ofNullable(updateDto)
@@ -44,7 +42,7 @@ public class ReviewController {
                 .map(reviewMapper::toDto)
                 .orElseThrow(() -> new ReviewCantUpdateException());
     }
-    @SneakyThrows
+
     @DeleteMapping("/{reviewId}")
     public void delete(@PathVariable(name = "reviewId") UUID id){
         reviewService.delete(id);

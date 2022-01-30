@@ -1,5 +1,6 @@
 package com.example.springstore.domain.dto.user;
 
+import com.example.springstore.domain.entity.enums.Role;
 import com.example.springstore.validation.annotation.Email;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
@@ -15,12 +16,13 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserCreateDto {
     @NotBlank
-    private String firstName;
+    String firstName;
     @NotBlank
-    private String lastName;
+    String lastName;
     @Email
     @NotBlank
-    private String email;
-    private String phone;
-    private String role;
+    String email;
+    String phone;
+    Role role;
+    String pwd;
 }

@@ -14,10 +14,10 @@ import java.util.UUID;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemDto {
-    private UUID id;
-    private String itemName;
-    private UUID groupId;
-    private String price;
-    private String description;
-    private Boolean availability;
+    UUID id;
+    String itemName;
+    UUID groupId;
+    String price;
+    String description;
+    Boolean availability;
 }

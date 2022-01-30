@@ -13,15 +13,15 @@ import java.util.UUID;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AddressDto {
     @NotNull
-    private UUID id;
+    UUID id;
     @NotBlank
-    private String city;
+    String city;
     @NotBlank
-    private String street;
+    String street;
     @NotBlank
-    private String houseNum;
+    String houseNum;
     @NotBlank
-    private String country;
+    String country;
     @NotBlank
-    private String addressIndex;
+    String addressIndex;
 }

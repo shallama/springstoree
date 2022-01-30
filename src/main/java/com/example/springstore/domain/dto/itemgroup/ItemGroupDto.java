@@ -13,7 +13,7 @@ import java.util.UUID;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemGroupDto {
-    private UUID id;
-    private String groupName;
-    private String description;
+    UUID id;
+    String groupName;
+    String description;
 }

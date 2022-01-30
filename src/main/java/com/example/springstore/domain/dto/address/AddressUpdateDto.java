@@ -13,9 +13,9 @@ import javax.validation.constraints.NotBlank;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class AddressUpdateDto {
-    private String city;
-    private String street;
-    private String houseNum;
-    private String country;
-    private String addressIndex;
+    String city;
+    String street;
+    String houseNum;
+    String country;
+    String addressIndex;
 }

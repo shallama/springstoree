@@ -7,8 +7,4 @@ import java.text.SimpleDateFormat;
 
 @Configuration
 public class CustomConfiguration {
-    @Bean
-    public SimpleDateFormat dateFormat(){
-        return new SimpleDateFormat("HH:mm dd.MM.yyyy");
-    }
 }

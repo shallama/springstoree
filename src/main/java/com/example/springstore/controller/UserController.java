@@ -34,17 +34,11 @@ import static org.springframework.http.HttpStatus.OK;
 @RequestMapping(path = "users")
 @RequiredArgsConstructor
 public class UserController {
-    @Autowired
+
     private final UserMapper userMapper;
-    @Autowired
     private final UserService userService;
-    @Autowired
     private final AddressMapper addressMapper;
-    @Autowired
-    private final AddressService addressService;
-    @Autowired
     private final ReviewService reviewService;
-    @Autowired
     private final ReviewMapper reviewMapper;
 
     /**
@@ -54,7 +48,6 @@ public class UserController {
      * @return user on JSON format
      */
 
-    @SneakyThrows
     @GetMapping("/{userId}")
     public UserDto get(@PathVariable(name = "userId") UUID id) {
         return Optional.of(id)
@@ -63,7 +56,6 @@ public class UserController {
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    @SneakyThrows
     @GetMapping("/info/{userId}")
     public UserInfoDto getInfo(@PathVariable(name = "userId") UUID id) {
         return Optional.ofNullable(id)
@@ -73,7 +65,6 @@ public class UserController {
     }
 
     @PostMapping
-    @ResponseStatus(value = OK)
     public UserDto create(@Valid @RequestBody UserCreateDto createDto) {
         return Optional.ofNullable(createDto)
                 .map(userMapper::fromCreateDto)
@@ -83,7 +74,6 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}")
-    @ResponseStatus(value = OK)
     public UserDto update(@PathVariable(name = "userId") UUID id, @RequestBody UserUpdateDto updateDto) {
         return Optional.ofNullable(updateDto)
                 .map(userMapper::fromUpdateDto)
@@ -93,13 +83,11 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    @ResponseStatus(value = NO_CONTENT)
     public void delete(@PathVariable(name = "userId") UUID id) {
         userService.delete(id);
     }
 
     @PostMapping("/{userId}/addresses")
-    @ResponseStatus(value = OK)
     public AddressDto assignAddress(@PathVariable UUID userId, @RequestBody AddressCreateDto createDto) {
 
         return Optional.ofNullable(createDto)
@@ -110,7 +98,6 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/addresses/")
-    @ResponseStatus(value = OK)
     public AddressDto updateAddress(@PathVariable UUID userId, @PathVariable UUID addressId, @RequestBody AddressUpdateDto updateDto){
         return Optional.ofNullable(updateDto)
                 .map(addressMapper::fromUpdateDto)
@@ -119,7 +106,6 @@ public class UserController {
                 .orElseThrow();
     }
 
-    @SneakyThrows
     @GetMapping("/{userId}/reviews")
     public List<ReviewDto> getReviewsByUser(@PathVariable(name = "userId") UUID userId){
         return Optional.of(userId)
@@ -127,15 +113,4 @@ public class UserController {
                 .map(reviewMapper::listToDto)
                 .orElseThrow();
     }
-
-    /*@PatchMapping("/redirect/{userId}")
-    public ModelAndView redirect(@PathVariable(name = "userId") UUID id, @RequestBody UserUpdateDto updateDto) {
-        return new ModelAndView("redirect:/users/{userId}");
-    }
-
-    @PatchMapping("/forward/{userId}")
-    public ModelAndView forward() {
-        return new ModelAndView("forward:/users/{userId}");
-    }*/
-
 }

@@ -11,6 +11,6 @@ import lombok.extern.jackson.Jacksonized;
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ItemGroupUpdateDto {
-    private String groupName;
-    private String description;
+    String groupName;
+    String description;
 }
