@@ -1,5 +1,6 @@
 package com.example.springstore.domain.entity;
 
+import com.example.springstore.domain.entity.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,8 +21,7 @@ public class Order extends BaseEntity {
     private Item item;
     private Integer itemCount;
     private LocalDate orderDate;
-    //status can be of three types: 1)preparation 2)readyToSend 3)sent
-    private String orderStatus;
+    private Status orderStatus;
     private Boolean orderCompleteness;
     private Integer amount;
 }

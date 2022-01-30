@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.Date;
@@ -34,7 +34,6 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final ItemService itemService;
     private final UserService userService;
-    private final SimpleDateFormat dateFormat;
 
     @Override
     public Review get(UUID id) {

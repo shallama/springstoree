@@ -1,5 +1,6 @@
 package com.example.springstore.domain.dto.user;
 
+import com.example.springstore.domain.entity.enums.Role;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
 
@@ -15,6 +16,6 @@ public class UserDto {
     String lastName;
     String email;
     String phone;
-    String role;
+    Role role;
     UUID addressId;
 }

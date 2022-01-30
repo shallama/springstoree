@@ -1,5 +1,6 @@
 package com.example.springstore.domain.dto.user;
 
+import com.example.springstore.domain.entity.enums.Role;
 import com.example.springstore.validation.annotation.Email;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
@@ -22,6 +23,6 @@ public class UserCreateDto {
     @NotBlank
     String email;
     String phone;
-    String role;
+    Role role;
     String pwd;
 }

@@ -32,7 +32,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final UserServiceImpl userService;
     private final ItemService itemService;
-    private final SimpleDateFormat dateFormat;
 
     @Override
     public Order get(UUID id) {

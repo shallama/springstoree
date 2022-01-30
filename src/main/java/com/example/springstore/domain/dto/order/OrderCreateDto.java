@@ -1,5 +1,6 @@
 package com.example.springstore.domain.dto.order;
 
+import com.example.springstore.domain.entity.enums.Status;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,7 +27,7 @@ public class OrderCreateDto {
     @NotNull
     LocalDate orderDate;
     @NotBlank
-    String orderStatus;
+    Status orderStatus;
     @AssertFalse
     Boolean orderCompleteness;
     Integer amount;
