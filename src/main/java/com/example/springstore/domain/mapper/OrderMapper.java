@@ -6,6 +6,7 @@ import com.example.springstore.domain.dto.order.OrderInfoDto;
 import com.example.springstore.domain.dto.order.OrderUpdateDto;
 import com.example.springstore.domain.entity.Order;
 import org.mapstruct.*;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ public interface OrderMapper {
     @Mapping(target = "itemCount", ignore = true)
     @Mapping(target = "orderDate", ignore = true)
     @Mapping(target = "amount", ignore = true)
+    @Mapping(target = "isReviewed", ignore = true)
     Order fromUpdateDto(OrderUpdateDto source);
 
     @Mapping(target = "userId", source = "user.id")
@@ -30,7 +32,9 @@ public interface OrderMapper {
 
     OrderInfoDto toInfoDto(Order source);
 
-    List<OrderDto> toListDto(List<Order> source);
+    default Page<OrderDto> toListDto(Page<Order> source){
+        return source.map(this::toDto);
+    }
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Order merge(@MappingTarget Order target, Order source);

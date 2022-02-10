@@ -12,17 +12,21 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
+@Table(name = "orders")
 public class Order extends BaseEntity {
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
     private User user;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "itemId")
     private Item item;
+
     private Integer itemCount;
     private LocalDate orderDate;
     @Enumerated(EnumType.STRING)
     private Status orderStatus;
     private Boolean orderCompleteness;
     private Integer amount;
+    private Boolean isReviewed;
 }

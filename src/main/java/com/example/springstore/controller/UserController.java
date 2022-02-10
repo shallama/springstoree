@@ -20,6 +20,9 @@ import com.example.springstore.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -88,17 +91,17 @@ public class UserController {
     }
 
     @PostMapping("/{userId}/addresses")
-    public AddressDto assignAddress(@PathVariable UUID userId, @RequestBody AddressCreateDto createDto) {
+    public AddressDto createAddress(@PathVariable UUID userId, @RequestBody AddressCreateDto createDto) {
 
         return Optional.ofNullable(createDto)
                 .map(addressMapper::fromCreateDto)
-                .map(toSave -> userService.assignAddress(userId, toSave))
+                .map(toSave -> userService.createAddress(userId, toSave))
                 .map(addressMapper::toDto)
                 .orElseThrow();
     }
 
     @PatchMapping("/{userId}/addresses/")
-    public AddressDto updateAddress(@PathVariable UUID userId, @PathVariable UUID addressId, @RequestBody AddressUpdateDto updateDto){
+    public AddressDto updateAddress(@PathVariable UUID userId, @RequestBody AddressUpdateDto updateDto){
         return Optional.ofNullable(updateDto)
                 .map(addressMapper::fromUpdateDto)
                 .map(current -> userService.updateAddress(userId, current))
@@ -106,11 +109,14 @@ public class UserController {
                 .orElseThrow();
     }
 
-    @GetMapping("/{userId}/reviews")
-    public List<ReviewDto> getReviewsByUser(@PathVariable(name = "userId") UUID userId){
+    @GetMapping("/{userId}/reviews/{pageNum}/{pageSize}")
+    public Page<ReviewDto> getReviewsByUser(@PathVariable(name = "userId") UUID userId,
+                                            @PathVariable(name = "pageNum") Integer pageNum,
+                                            @PathVariable(name = "pageSize") Integer pageSize){
         return Optional.of(userId)
-                .map(reviewService::getReviewsByUser)
+                .map(curr -> reviewService.getReviewsByUser(userId, pageNum, pageSize))
                 .map(reviewMapper::listToDto)
                 .orElseThrow();
     }
+
 }

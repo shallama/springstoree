@@ -12,11 +12,15 @@ import org.springframework.stereotype.Component;
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "address", ignore = true)
+    @Mapping(target = "reviews", ignore = true)
+    @Mapping(target = "orders", ignore = true)
     User fromCreateDto(UserCreateDto source);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "address", ignore = true)
+    @Mapping(target = "reviews", ignore = true)
+    @Mapping(target = "orders", ignore = true)
     User fromUpdateDto(UserUpdateDto source);
 
     @Mapping(target = "addressId", source = "address.id")

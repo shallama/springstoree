@@ -20,8 +20,7 @@ public class ItemCreateDto {
     String itemName;
     @NotNull
     UUID groupId;
-    @NotBlank
-    String price;
+    Integer price;
     @NotBlank
     String description;
     Boolean availability;

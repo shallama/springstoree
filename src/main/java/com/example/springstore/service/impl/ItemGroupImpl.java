@@ -1,16 +1,24 @@
 package com.example.springstore.service.impl;
 
+import com.example.springstore.domain.entity.Item;
 import com.example.springstore.domain.entity.ItemGroup;
 import com.example.springstore.domain.exeption.ItemGroupNotFoundException;
 import com.example.springstore.domain.mapper.ItemGroupMapper;
 import com.example.springstore.repository.ItemGroupRepository;
+import com.example.springstore.repository.ItemRepository;
 import com.example.springstore.service.ItemGroupService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.SpringVersion;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,6 +29,7 @@ public class ItemGroupImpl implements ItemGroupService {
 
     private final ItemGroupRepository itemGroupRepository;
     private final ItemGroupMapper itemGroupMapper;
+    private final ItemRepository itemRepository;
 
     @Override
     public ItemGroup get(UUID id) {
@@ -48,4 +57,38 @@ public class ItemGroupImpl implements ItemGroupService {
     public void delete(UUID id) {
         itemGroupRepository.deleteById(id);
     }
+
+    private Boolean checkList(UUID groupId, List<UUID> list){
+        for (UUID id : list){
+            if(groupId.equals(id)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private List<UUID> getGroupsWithItems(List<Item> items){
+        List<UUID> groupIds = new ArrayList<>();
+        for(Item item : items){
+            if (!checkList(item.getItemGroup().getId(), groupIds)){
+                groupIds.add(item.getItemGroup().getId());
+            }
+        }
+        return groupIds;
+    }
+    @Override
+    public Page<ItemGroup> getGroupsByItemAvailability(Boolean availability, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        List<Item> items = itemRepository.findAllByAvailability(availability);
+        List<UUID> groups = getGroupsWithItems(items);
+        Page<ItemGroup> result = itemGroupRepository.findByIdIn(groups, pageable);
+        return result;
+    }
+
+    @Override
+    public Page<ItemGroup> getGroupsList(Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        return itemGroupRepository.findAll(pageable);
+    }
+
 }

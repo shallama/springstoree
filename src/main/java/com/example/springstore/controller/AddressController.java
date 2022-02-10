@@ -32,7 +32,7 @@ public class AddressController {
         return Optional.of(id)
                 .map(addressService::get)
                 .map(addressMapper::toDto)
-                .orElseThrow(() -> new AddressNotFoundException(id));
+                .orElseThrow(() -> new AddressNotFoundException());
     }
 
     @PatchMapping("/{addressId}")
@@ -43,10 +43,5 @@ public class AddressController {
                 .map(toUpdate -> addressService.update(id, toUpdate))
                 .map(addressMapper::toDto)
                 .orElseThrow();
-    }
-    @GetMapping("/mow")
-    public LocalDate getTime(){
-        LocalDate date = LocalDate.now();
-        return date;
     }
 }

@@ -16,7 +16,7 @@ import java.util.UUID;
 public class ItemUpdateDto {
     String itemName;
     UUID groupId;
-    String price;
+    Integer price;
     String description;
     Boolean availability;
 }

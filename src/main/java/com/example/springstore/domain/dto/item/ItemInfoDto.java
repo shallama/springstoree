@@ -9,6 +9,7 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 import java.util.UUID;
 
 @Value
@@ -19,7 +20,7 @@ public class ItemInfoDto {
     UUID id;
     String itemName;
     ItemGroupDto itemGroup;
-    String price;
+    Integer price;
     String description;
     Boolean availability;
 }

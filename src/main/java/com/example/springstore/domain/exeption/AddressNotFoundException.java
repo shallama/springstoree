@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @ResponseStatus(value = HttpStatus.NOT_FOUND)
 public class AddressNotFoundException extends RuntimeException {
-    public AddressNotFoundException (UUID id) {
-        super("Address not found: id =" + id);
+    public AddressNotFoundException () {
+        super("Address not found!");
     }
 }
