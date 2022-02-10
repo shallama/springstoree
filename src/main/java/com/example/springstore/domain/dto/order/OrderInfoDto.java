@@ -27,4 +27,5 @@ public class OrderInfoDto {
     Status orderStatus;
     Boolean orderCompleteness;
     Integer amount;
+    Boolean isReviewed;
 }

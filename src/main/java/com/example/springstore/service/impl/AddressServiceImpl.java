@@ -25,7 +25,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address get(UUID id) {
-        return addressRepository.findById(id).orElseThrow(() -> new AddressNotFoundException(id));
+        return addressRepository.findById(id).orElseThrow(() -> new AddressNotFoundException());
     }
 
     @Override

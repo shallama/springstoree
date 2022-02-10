@@ -35,6 +35,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public User create(User user) {
+
         return userRepository.save(user);
     }
 
@@ -60,16 +61,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public Address assignAddress(UUID id, Address address) {
+    public Address createAddress(UUID id, Address address) {
         User user = get(id);
-        if (user.getAddress() == null){
-            Address createdAddress = addressService.create(address);
-            user.setAddress(createdAddress);
-            update(id, user);
-            return createdAddress;
-        }
-        Address oldAddress = user.getAddress();
-        return addressService.update(oldAddress.getId(), address);
+        Address createdAddress = addressService.create(address); //address was added to DB
+        user.setAddress(createdAddress); //user append address
+        update(id, user); //address was added to table of users in DB
+        return createdAddress; // address was sent to controller
     }
 
     @Override
@@ -78,7 +75,7 @@ public class UserServiceImpl implements UserService {
         User user = get(userId);
         Address oldAddress = user.getAddress();
         if (oldAddress == null){
-            return assignAddress(userId, address);
+            return createAddress(userId, address);
         }
         return addressService.update(oldAddress.getId(), address);
     }

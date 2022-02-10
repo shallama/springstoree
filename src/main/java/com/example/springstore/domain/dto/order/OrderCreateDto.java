@@ -26,9 +26,11 @@ public class OrderCreateDto {
     Integer itemCount;
     @NotNull
     LocalDate orderDate;
-    @NotBlank
     Status orderStatus;
     @AssertFalse
     Boolean orderCompleteness;
     Integer amount;
+    @AssertFalse
+    Boolean isReviewed;
+
 }

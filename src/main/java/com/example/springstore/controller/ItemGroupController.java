@@ -3,12 +3,14 @@ package com.example.springstore.controller;
 import com.example.springstore.domain.dto.itemgroup.ItemGroupCreateDto;
 import com.example.springstore.domain.dto.itemgroup.ItemGroupDto;
 import com.example.springstore.domain.dto.itemgroup.ItemGroupUpdateDto;
+import com.example.springstore.domain.entity.ItemGroup;
 import com.example.springstore.domain.exeption.ItemGroupNotFoundException;
 import com.example.springstore.domain.mapper.ItemGroupMapper;
 import com.example.springstore.service.ItemGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -56,5 +58,24 @@ public class ItemGroupController {
     @DeleteMapping("/{groupId}")
     public void delete(@PathVariable(name = "groupId") UUID id){
         groupService.delete(id);
+    }
+
+    @GetMapping("/{availability}/{pageNum}/{pageSize}")
+    public Page<ItemGroupDto> getGroupByItemAvailability(@PathVariable(name = "availability") Boolean availability,
+                                                         @PathVariable(name = "pageNum") Integer pageNum,
+                                                         @PathVariable(name = "pageSize") Integer pageSize){
+        return Optional.ofNullable(availability)
+                .map(curr -> groupService.getGroupsByItemAvailability(availability, pageNum, pageSize))
+                .map(groupMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/{pageNum}/{pageSize}")
+    public Page<ItemGroupDto> getGroupsList(@PathVariable(name = "pageNum") Integer pageNum,
+                                            @PathVariable(name = "pageSize") Integer pageSize){
+        return Optional.ofNullable(pageNum)
+                .map(curr -> groupService.getGroupsList(curr, pageSize))
+                .map(groupMapper::listToDto)
+                .orElseThrow();
     }
 }

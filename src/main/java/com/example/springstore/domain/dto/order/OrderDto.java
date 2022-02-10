@@ -24,4 +24,5 @@ public class OrderDto {
     Status orderStatus;
     Boolean orderCompleteness;
     Integer amount;
+    Boolean isReviewed;
 }

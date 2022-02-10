@@ -6,25 +6,18 @@ import com.example.springstore.domain.dto.item.ItemInfoDto;
 import com.example.springstore.domain.dto.item.ItemUpdateDto;
 import com.example.springstore.domain.dto.review.ReviewCreateDto;
 import com.example.springstore.domain.dto.review.ReviewDto;
-import com.example.springstore.domain.entity.Item;
 import com.example.springstore.domain.exeption.ItemNotFoundException;
 import com.example.springstore.domain.mapper.ItemMapper;
 import com.example.springstore.domain.mapper.ReviewMapper;
 import com.example.springstore.service.ItemService;
 import com.example.springstore.service.ReviewService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @RequestMapping(path = "items")
@@ -49,14 +42,6 @@ public class ItemController {
         return Optional.of(id)
                 .map(itemService::get)
                 .map(itemMapper::toInfoDto)
-                .orElseThrow();
-    }
-
-    @GetMapping("/group/{groupId}")
-    public List<ItemDto> getByGroup(@PathVariable(name = "groupId") UUID groupId){
-        return Optional.of(groupId)
-                .map(itemService::getItemsByGroup)
-                .map(itemMapper::listToDto)
                 .orElseThrow();
     }
 
@@ -85,21 +70,133 @@ public class ItemController {
         itemService.delete(id);
     }
 
-    @PostMapping("/{itemId}/reviews")
-    public ReviewDto createReview(@Valid @PathVariable(name = "itemId") UUID itemId, @RequestBody ReviewCreateDto createDto){
+    @PostMapping("/{itemId}/reviews/{orderId}")
+    public ReviewDto createReview(@Valid @PathVariable(name = "itemId") UUID itemId,
+                                  @PathVariable(name = "orderId") UUID orderId,
+                                  @RequestBody ReviewCreateDto createDto){
         return Optional.ofNullable(createDto)
                 .map(reviewMapper::fromCreateDto)
                 .map(current -> reviewService.create(itemId,
-                                        createDto.getUserId(), current))
+                                        createDto.getUserId(), orderId, current))
                 .map(reviewMapper::toDto)
                 .orElseThrow();
     }
 
-    @GetMapping("/{itemId}/reviews")
-    public List<ReviewDto> getReviewsByItemId(@PathVariable(name = "itemId") UUID id){
+    @GetMapping("/{pageNum}/{pageSize}")
+    public Page<ItemDto> getItemsList(@PathVariable(name = "pageNum") Integer pageNum,
+                                      @PathVariable(name = "pageSize") Integer pageSize){
+        return Optional.ofNullable(pageNum)
+                .map(curr -> itemService.getItemsList(curr, pageSize))
+                .map(itemMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/group/{groupId}/{pageNum}/{pageSize}")
+    public Page<ItemDto> getItemsByGroup(@PathVariable(name = "groupId") UUID groupId,
+                                         @PathVariable(name = "pageNum") Integer pageNum,
+                                         @PathVariable(name = "pageSize") Integer pageSize){
+        return Optional.of(groupId)
+                .map(curr -> itemService.getItemsByGroup(groupId, pageNum,pageSize))
+                .map(itemMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/group/{groupId}/{availability}/{pageNum}/{pageSize}")
+    public Page<ItemDto> getItemsByGroupAndAvailability(@PathVariable(name = "groupId") UUID groupId,
+                                         @PathVariable(name = "pageNum") Integer pageNum,
+                                         @PathVariable(name = "pageSize") Integer pageSize,
+                                         @PathVariable Boolean availability){
+        return Optional.of(groupId)
+                .map(curr -> itemService.getItemsByGroupAndAvailability(curr, availability, pageNum, pageSize))
+                .map(itemMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/{itemId}/reviews/{pageNum}/{pageSize}")
+    public Page<ReviewDto> getReviewsByItemId(@PathVariable(name = "itemId") UUID id,
+                                              @PathVariable(name = "pageNum") Integer pageNum,
+                                              @PathVariable(name = "pageSize") Integer pageSize){
         return Optional.of(id)
-                .map(reviewService::getReviewByItem)
+                .map(curr -> reviewService.getReviewByItem(curr, pageNum, pageSize))
                 .map(reviewMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/rate/{rateCount}/{pageNum}/{pageSize}")
+    public Page<ItemDto> getItemsByRate(@PathVariable(name = "rateCount") Integer rate,
+                                        @PathVariable(name = "pageNum") Integer pageNum,
+                                        @PathVariable(name = "pageSize") Integer pageSize){
+        return Optional.ofNullable(rate)
+                .map(curr -> itemService.getItemsByRate(curr, pageNum, pageSize))
+                .map(itemMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/rate/{availability}/{rateCount}/{pageNum}/{pageSize}")
+    public Page<ItemDto> getItemsByRateAndAvailability(@PathVariable(name = "rateCount") Integer rate,
+                                        @PathVariable(name = "pageNum") Integer pageNum,
+                                        @PathVariable(name = "pageSize") Integer pageSize,
+                                        @PathVariable(name = "availability") Boolean availability){
+        return Optional.ofNullable(rate)
+                .map(curr -> itemService.getItemsByRateAndAvailability(availability, curr, pageNum, pageSize))
+                .map(itemMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/rate/{groupId}/{availability}/{rateCount}/{pageNum}/{pageSize}")
+    public Page<ItemDto> getItemsByRateAndAvailabilityAndGroup(@PathVariable(name = "rateCount") Integer rate,
+                                        @PathVariable(name = "pageNum") Integer pageNum,
+                                        @PathVariable(name = "pageSize") Integer pageSize,
+                                        @PathVariable(name = "availability") Boolean availability,
+                                        @PathVariable(name = "groupId") UUID groupId){
+        return Optional.ofNullable(rate)
+                .map(curr -> itemService.getItemsByRateAndAvailabilityAndGroup(groupId, availability,curr,
+                        pageNum, pageSize))
+                .map(itemMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/price/{maxPrice}/{pageNum}/{pageSize}")
+    public Page<ItemDto> getItemsByPrice(@PathVariable(name = "pageNum") Integer pageNum,
+                                         @PathVariable(name = "pageSize") Integer pageSize,
+                                         @PathVariable(name = "maxPrice") Integer maxPrice){
+        return Optional.ofNullable(maxPrice)
+                .map(curr -> itemService.getItemsByPriceAndAvailability(curr, pageNum, pageSize))
+                .map(itemMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/price-rate/{maxPrice}/{rateCount}/{pageNum}/{pageSize}")
+    public Page<ItemDto> getItemsByPriceAndRate(@PathVariable(name = "rateCount") Integer rate,
+                                        @PathVariable(name = "pageNum") Integer pageNum,
+                                        @PathVariable(name = "pageSize") Integer pageSize,
+                                        @PathVariable(name = "maxPrice") Integer maxPrice){
+        return Optional.ofNullable(rate)
+                .map(curr -> itemService.getItemsByPriceAndRate(maxPrice, curr, pageNum, pageSize))
+                .map(itemMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/price-group/{groupId}/{maxPrice}/{pageNum}/{pageSize}")
+    public Page<ItemDto> getItemsByPriceAndGroup(@PathVariable(name = "pageNum") Integer pageNum,
+                                                 @PathVariable(name = "pageSize") Integer pageSize,
+                                                 @PathVariable(name = "maxPrice") Integer maxPrice,
+                                                 @PathVariable(name = "groupId") UUID groupId){
+        return Optional.ofNullable(maxPrice)
+                .map(curr -> itemService.getItemsByPriceAndGroup(curr, groupId, pageNum, pageSize))
+                .map(itemMapper::listToDto)
+                .orElseThrow();
+    }
+
+    @GetMapping("/price-rate-group/{rate}/{groupId}/{maxPrice}/{pageNum}/{pageSize}")
+    public Page<ItemDto> getItemsByPriceAndRateAndGroup(@PathVariable(name = "pageNum") Integer pageNum,
+                                                        @PathVariable(name = "rate") Integer rate,
+                                                        @PathVariable(name = "pageSize") Integer pageSize,
+                                                        @PathVariable(name = "maxPrice") Integer maxPrice,
+                                                        @PathVariable(name = "groupId") UUID groupId){
+        return Optional.ofNullable(maxPrice)
+                .map(curr -> itemService.getItemsByPriceAndRateAndGroup(curr, rate, groupId, pageNum, pageSize))
+                .map(itemMapper::listToDto)
                 .orElseThrow();
     }
 }
