@@ -1,10 +1,8 @@
 package com.example.springstore.service.impl;
 
-import com.example.springstore.domain.entity.Item;
-import com.example.springstore.domain.entity.ItemGroup;
-import com.example.springstore.domain.entity.Rating;
-import com.example.springstore.domain.entity.Review;
+import com.example.springstore.domain.entity.*;
 import com.example.springstore.domain.exeption.ItemNotFoundException;
+import com.example.springstore.domain.exeption.ReviewWasAddedException;
 import com.example.springstore.domain.mapper.ItemMapper;
 import com.example.springstore.repository.ItemRepository;
 import com.example.springstore.repository.RatingRepository;
@@ -30,6 +28,7 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final ItemMapper itemMapper;
     private final ItemGroupService groupService;
+    private final ReviewService reviewService;
     private final ReviewRepository reviewRepository;
     private final RatingRepository ratingRepository;
 
@@ -60,6 +59,14 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public void delete(UUID id) {
         itemRepository.deleteById(id);
+    }
+
+
+    @Override
+    public Page<Review> getReviewByItem(UUID itemId, Integer pageNum, Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageNum, pageSize);
+        Item item = get(itemId);
+        return reviewService.getReviewByItem(item, pageable);
     }
 
     @Override

@@ -70,18 +70,6 @@ public class ItemController {
         itemService.delete(id);
     }
 
-    @PostMapping("/{itemId}/reviews/{orderId}")
-    public ReviewDto createReview(@Valid @PathVariable(name = "itemId") UUID itemId,
-                                  @PathVariable(name = "orderId") UUID orderId,
-                                  @RequestBody ReviewCreateDto createDto){
-        return Optional.ofNullable(createDto)
-                .map(reviewMapper::fromCreateDto)
-                .map(current -> reviewService.create(itemId,
-                                        createDto.getUserId(), orderId, current))
-                .map(reviewMapper::toDto)
-                .orElseThrow();
-    }
-
     @GetMapping("/{pageNum}/{pageSize}")
     public Page<ItemDto> getItemsList(@PathVariable(name = "pageNum") Integer pageNum,
                                       @PathVariable(name = "pageSize") Integer pageSize){
@@ -117,7 +105,7 @@ public class ItemController {
                                               @PathVariable(name = "pageNum") Integer pageNum,
                                               @PathVariable(name = "pageSize") Integer pageSize){
         return Optional.of(id)
-                .map(curr -> reviewService.getReviewByItem(curr, pageNum, pageSize))
+                .map(curr -> itemService.getReviewByItem(curr, pageNum, pageSize))
                 .map(reviewMapper::listToDto)
                 .orElseThrow();
     }

@@ -1,23 +1,32 @@
 package com.example.springstore.service.impl;
 
+import com.example.springstore.domain.dto.order.OrderSearchRequest;
+import com.example.springstore.domain.entity.Item;
 import com.example.springstore.domain.entity.Order;
+import com.example.springstore.domain.entity.Review;
 import com.example.springstore.domain.entity.User;
 import com.example.springstore.domain.entity.enums.Status;
 import com.example.springstore.domain.exeption.AddressNotFoundException;
 import com.example.springstore.domain.exeption.OrderCanNotFindException;
 import com.example.springstore.domain.exeption.OrderCantDeleteException;
+import com.example.springstore.domain.exeption.ReviewWasAddedException;
 import com.example.springstore.domain.mapper.OrderMapper;
 import com.example.springstore.repository.OrderRepository;
+import com.example.springstore.service.DateService;
 import com.example.springstore.service.ItemService;
 import com.example.springstore.service.OrderService;
+import com.example.springstore.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.*;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.*;
@@ -33,6 +42,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderMapper orderMapper;
     private final UserServiceImpl userService;
     private final ItemService itemService;
+    private final ReviewService reviewService;
+    private final DateService dateService;
 
     @Override
     public Order get(UUID id) {
@@ -62,13 +73,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Boolean validateDate(LocalDate orderDate) {
-        LocalDate date = LocalDate.now();
+        LocalDate date = dateService.get();
         Period period = Period.between(orderDate, date);
         Integer days = period.getDays();
-        if (days < 1)
-            return true;
-        else
-            return false;
+        return (days < 1);
     }
 
     @Override
@@ -83,55 +91,66 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
-
     @Override
-    public Page<Order> getOrdersByUserId(UUID userId, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        return  orderRepository.findAllByUser(userService.get(userId), pageable);
+    public Review createReview(UUID itemId, UUID userId, UUID orderId, Review review) {
+        Order order = get(orderId);
+        if (order.getIsReviewed()){
+            throw new ReviewWasAddedException();
+        }
+        Item item = itemService.get(itemId);
+        Integer rateSum = item.getRatingSum();
+        Integer rateCount = item.getRatingCount();
+        if (rateCount == null || rateSum == null){
+            rateCount = 0;
+            rateSum = 0;
+        }
+        item.setRatingSum(rateSum + review.getItemRate());
+        item.setRatingCount(rateCount++);
+        //check for updating item
+        order.setIsReviewed(true);
+        //check for updating order
+        //orderService.update(orderId, order);
+        review.setItem(item);
+        review.setUser(userService.get(userId));
+        return reviewService.create(review);
     }
 
-    @Override
-    public Page<Order> getOrdersByItemId(UUID itemId, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        return orderRepository.findAllByItem(itemService.get(itemId), pageable);
-    }
 
     @Override
-    public Page<Order> getOrdersByStatus(Integer pageNum, Integer pageSize, Status status) {
+    public Page<Order> getOrdersList(OrderSearchRequest searchRequest, Integer pageNum, Integer pageSize) {
         Pageable pageable = PageRequest.of(pageNum, pageSize);
-        return orderRepository.findAllByOrderStatus(status, pageable);
-    }
+        Specification<Order> specification =  new Specification<Order>() {
+            @Override
+            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicatesList = new ArrayList<>();
 
-    @Override
-    public Page<Order> getOrdersByComplete(Integer pageNum, Integer pageSize, Boolean completeness) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        return orderRepository.findAllByOrderCompleteness(completeness, pageable);
-    }
-
-    @Override
-    public Page<Order> getOrdersByUserIdAndComplete(UUID userId, Boolean completeness, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        User user = userService.get(userId);
-        return orderRepository.findAllByUserAndOrderCompleteness(user, completeness, pageable);
-    }
-
-    @Override
-    public Page<Order> getOrdersByUserIdAndStatus(UUID userId, Status status, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        User user = userService.get(userId);
-        return orderRepository.findAllByUserAndOrderStatus(user, status, pageable);
-    }
-
-    @Override
-    public Page<Order> getOrdersByUserIdAndReviewed(UUID userId, Boolean isReviewed, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("isReviewed").ascending());
-        User user = userService.get(userId);
-        return orderRepository.findAllByUserAndIsReviewed(user, isReviewed, pageable);
-    }
-
-    @Override
-    public Page<Order> getOrdersList(Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        return orderRepository.findAll(pageable);
+                if (searchRequest.getUserId() != null){
+                    Join<Order, User> userJoin = root.join("user");
+                    User user = userService.get(searchRequest.getUserId());
+                    Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+                    predicatesList.add(userPredicate);
+                }
+                if (searchRequest.getItemId() != null){
+                    Join<Order, Item> itemJoin = root.join("item");
+                    Item item = itemService.get(searchRequest.getItemId());
+                    Predicate itemPredicate = criteriaBuilder.equal(root.get("item"),item);
+                    predicatesList.add(itemPredicate);
+                }
+                if (searchRequest.getOrderStatus() != null){
+                    Predicate statusPredicate = criteriaBuilder.equal(root.get("orderStatus"), searchRequest.getOrderStatus());
+                    predicatesList.add(statusPredicate);
+                }
+                if (searchRequest.getOrderCompleteness() != null){
+                    Predicate completePredicate = criteriaBuilder.equal(root.get("orderCompleteness"), searchRequest.getOrderCompleteness());
+                    predicatesList.add(completePredicate);
+                }
+                if (searchRequest.getIsReviewed() != null){
+                    Predicate reviewedPredicate = criteriaBuilder.equal(root.get("isReviewed"), searchRequest.getIsReviewed());
+                    predicatesList.add(reviewedPredicate);
+                }
+                return criteriaBuilder.and(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            }
+        };
+        return orderRepository.findAll(specification, pageable);
     }
 }

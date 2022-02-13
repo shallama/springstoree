@@ -7,13 +7,14 @@ import com.example.springstore.domain.entity.enums.Status;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface OrderRepository extends JpaRepository<Order, UUID> {
+public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecificationExecutor<Order> {
     Page<Order> findAllByItem(Item item, Pageable pageable);
     Page<Order> findAllByUser(User user, Pageable pageable);
     Page<Order> findAllByOrderStatus(Status status, Pageable pageable);
