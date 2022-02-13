@@ -19,6 +19,8 @@ public interface ItemMapper {
     @Mapping(target = "ratings", ignore = true)
     @Mapping(target = "reviews", ignore = true)
     @Mapping(target = "orders", ignore = true)
+    @Mapping(target = "ratingSum", ignore = true)
+    @Mapping(target = "ratingCount", ignore = true)
     Item fromCreateDto(ItemCreateDto source);
 
     @Mapping(target = "groupId", source = "itemGroup.id")
@@ -34,6 +36,8 @@ public interface ItemMapper {
     @Mapping(target = "ratings", ignore = true)
     @Mapping(target = "reviews", ignore = true)
     @Mapping(target = "orders", ignore = true)
+    @Mapping(target = "ratingSum", ignore = true)
+    @Mapping(target = "ratingCount", ignore = true)
     Item fromUpdateDto(ItemUpdateDto source);
 
     @Mapping(target = "ratings", ignore = true)

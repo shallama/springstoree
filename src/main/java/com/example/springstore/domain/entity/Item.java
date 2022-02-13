@@ -23,6 +23,8 @@ public class Item extends BaseEntity {
     private Integer price;
     private String description;
     private Boolean availability;
+    private Integer ratingSum;
+    private Integer ratingCount;
 
     @Setter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "item",orphanRemoval = true,

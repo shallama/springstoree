@@ -1,5 +1,6 @@
 package com.example.springstore.service;
 import com.example.springstore.domain.entity.Item;
+import com.example.springstore.domain.entity.Review;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ public interface ItemService {
     Item create(UUID groupId, Item item);
     Item update(UUID id, Item item);
     void delete(UUID id);
+
+    Page<Review> getReviewByItem(UUID itemId, Integer pageNum, Integer pageSize);
+
     Page<Item> getItemsByGroupAndAvailability(UUID groupId, Boolean availability, Integer pageNum, Integer pageSize);
 
     Page<Item> getItemsList(Integer pageNum,Integer pageSize);
