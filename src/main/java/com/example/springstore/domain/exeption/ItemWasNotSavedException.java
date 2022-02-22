@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(value = HttpStatus.NOT_MODIFIED)
-public class OrderCanNotFindException extends RuntimeException {
-    public OrderCanNotFindException(){
-        super("Order not found!");
+public class ItemWasNotSavedException extends RuntimeException{
+    public ItemWasNotSavedException(){
+        super("Item was not saved!");
     }
 }

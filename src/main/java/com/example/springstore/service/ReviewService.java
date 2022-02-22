@@ -1,5 +1,6 @@
 package com.example.springstore.service;
 
+import com.example.springstore.domain.dto.review.ReviewSearchRequest;
 import com.example.springstore.domain.entity.Item;
 import com.example.springstore.domain.entity.Review;
 import org.springframework.data.domain.Page;
@@ -14,7 +15,5 @@ public interface ReviewService {
     Review create(Review review);
     Review update(UUID id, Review review);
     void delete(UUID id);
-    Page<Review> getReviewByItem(Item item, Pageable pageable);
-    Page<Review> getReviewsByUser(UUID userId, Integer pageNum, Integer pageSize);
-    Page<Review> getReviewByRate(Integer rate, Integer pageNum, Integer pageSize);
+    Page<Review> getReviewList(ReviewSearchRequest searchRequest, Pageable pageable);
 }

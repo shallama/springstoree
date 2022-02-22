@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -52,6 +53,7 @@ public class UserController {
      */
 
     @GetMapping("/{userId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_SELLER')")
     public UserDto get(@PathVariable(name = "userId") UUID id) {
         return Optional.of(id)
                 .map(userService::get)
@@ -60,6 +62,7 @@ public class UserController {
     }
 
     @GetMapping("/info/{userId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_SELLER')")
     public UserInfoDto getInfo(@PathVariable(name = "userId") UUID id) {
         return Optional.ofNullable(id)
                 .map(userService::get)
@@ -67,16 +70,8 @@ public class UserController {
                 .orElseThrow(() -> new UserNotFoundException(id));
     }
 
-    @PostMapping
-    public UserDto create(@Valid @RequestBody UserCreateDto createDto) {
-        return Optional.ofNullable(createDto)
-                .map(userMapper::fromCreateDto)
-                .map(userService::create)
-                .map(userMapper::toDto)
-                .orElseThrow();
-    }
-
     @PatchMapping("/{userId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER')")
     public UserDto update(@PathVariable(name = "userId") UUID id, @RequestBody UserUpdateDto updateDto) {
         return Optional.ofNullable(updateDto)
                 .map(userMapper::fromUpdateDto)
@@ -86,11 +81,13 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER')")
     public void delete(@PathVariable(name = "userId") UUID id) {
         userService.delete(id);
     }
 
     @PostMapping("/{userId}/addresses")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER')")
     public AddressDto createAddress(@PathVariable UUID userId, @RequestBody AddressCreateDto createDto) {
 
         return Optional.ofNullable(createDto)
@@ -101,21 +98,12 @@ public class UserController {
     }
 
     @PatchMapping("/{userId}/addresses/")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER')")
     public AddressDto updateAddress(@PathVariable UUID userId, @RequestBody AddressUpdateDto updateDto){
         return Optional.ofNullable(updateDto)
                 .map(addressMapper::fromUpdateDto)
                 .map(current -> userService.updateAddress(userId, current))
                 .map(addressMapper::toDto)
-                .orElseThrow();
-    }
-
-    @GetMapping("/{userId}/reviews/{pageNum}/{pageSize}")
-    public Page<ReviewDto> getReviewsByUser(@PathVariable(name = "userId") UUID userId,
-                                            @PathVariable(name = "pageNum") Integer pageNum,
-                                            @PathVariable(name = "pageSize") Integer pageSize){
-        return Optional.of(userId)
-                .map(curr -> reviewService.getReviewsByUser(userId, pageNum, pageSize))
-                .map(reviewMapper::listToDto)
                 .orElseThrow();
     }
 

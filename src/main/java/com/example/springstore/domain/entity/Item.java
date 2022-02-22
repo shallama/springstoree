@@ -23,13 +23,10 @@ public class Item extends BaseEntity {
     private Integer price;
     private String description;
     private Boolean availability;
-    private Integer ratingSum;
-    private Integer ratingCount;
 
     @Setter(AccessLevel.PRIVATE)
-    @OneToMany(mappedBy = "item",orphanRemoval = true,
-            cascade = {PERSIST, MERGE, DETACH, REFRESH})
-    private List<Rating> ratings = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "item")
+    private Rating rating;
 
     @Setter(AccessLevel.PRIVATE)
     @OneToMany(mappedBy = "item",orphanRemoval = true,

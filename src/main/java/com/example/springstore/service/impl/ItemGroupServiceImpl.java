@@ -1,5 +1,6 @@
 package com.example.springstore.service.impl;
 
+import com.example.springstore.domain.dto.itemgroup.GroupSearchRequest;
 import com.example.springstore.domain.entity.Item;
 import com.example.springstore.domain.entity.ItemGroup;
 import com.example.springstore.domain.exeption.ItemGroupNotFoundException;
@@ -14,9 +15,11 @@ import org.springframework.core.SpringVersion;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,7 +28,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ItemGroupImpl implements ItemGroupService {
+public class ItemGroupServiceImpl implements ItemGroupService {
 
     private final ItemGroupRepository itemGroupRepository;
     private final ItemGroupMapper itemGroupMapper;
@@ -76,18 +79,19 @@ public class ItemGroupImpl implements ItemGroupService {
         }
         return groupIds;
     }
-    @Override
-    public Page<ItemGroup> getGroupsByItemAvailability(Boolean availability, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        List<Item> items = itemRepository.findAllByAvailability(availability);
+
+    public Page<ItemGroup> getGroupsByItemAvailability(Pageable pageable) {
+        List<Item> items = itemRepository.findAllByAvailability(true);
         List<UUID> groups = getGroupsWithItems(items);
         Page<ItemGroup> result = itemGroupRepository.findByIdIn(groups, pageable);
         return result;
     }
 
     @Override
-    public Page<ItemGroup> getGroupsList(Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
+    public Page<ItemGroup> getGroupsList(GroupSearchRequest searchRequest, Pageable pageable) {
+        if (searchRequest.getItemAvailability()){
+            return getGroupsByItemAvailability(pageable);
+        }
         return itemGroupRepository.findAll(pageable);
     }
 

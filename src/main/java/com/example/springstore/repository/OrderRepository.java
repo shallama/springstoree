@@ -15,11 +15,4 @@ import java.util.UUID;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecificationExecutor<Order> {
-    Page<Order> findAllByItem(Item item, Pageable pageable);
-    Page<Order> findAllByUser(User user, Pageable pageable);
-    Page<Order> findAllByOrderStatus(Status status, Pageable pageable);
-    Page<Order> findAllByOrderCompleteness(Boolean completeness, Pageable pageable);
-    Page<Order> findAllByUserAndOrderCompleteness(User user, Boolean orderCompleteness, Pageable pageable);
-    Page<Order> findAllByUserAndOrderStatus(User user, Status status, Pageable pageable);
-    Page<Order> findAllByUserAndIsReviewed(User user, Boolean isReviewed, Pageable pageable);
 }

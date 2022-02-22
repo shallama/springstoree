@@ -9,6 +9,8 @@ import com.example.springstore.domain.mapper.ReviewMapper;
 import com.example.springstore.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,6 +27,7 @@ public class OrderController {
     private final ReviewMapper reviewMapper;
 
     @GetMapping("/{orderId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_SELLER')")
     public OrderDto get(@PathVariable(name = "orderId") UUID id){
         return Optional.of(id)
                 .map(orderService::get)
@@ -33,6 +36,7 @@ public class OrderController {
     }
 
     @GetMapping("/info/{orderId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_SELLER')")
     public OrderInfoDto getInfo(@PathVariable(name = "orderId") UUID id){
         return Optional.of(id)
                 .map(orderService::get)
@@ -40,17 +44,18 @@ public class OrderController {
                 .orElseThrow();
     }
 
-    @GetMapping("/{pageNum}/{pageSize}")
+    @GetMapping
+    @PreAuthorize("hasRole('ADMIN') || hasRole('CUSTOMER') || hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_SELLER')")
     public Page<OrderDto> getOrdersList(@RequestBody OrderSearchRequest searchRequest,
-                                        @PathVariable(name = "pageNum") Integer pageNum,
-                                        @PathVariable(name = "pageSize") Integer pageSize){
+                                        Pageable pageable){
         return Optional.ofNullable(searchRequest)
-                .map(curr -> orderService.getOrdersList(curr, pageNum, pageSize))
+                .map(curr -> orderService.getOrdersList(curr, pageable))
                 .map(orderMapper::toListDto)
                 .orElseThrow();
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public OrderDto create(@Valid @RequestBody OrderCreateDto createDto){
         UUID userId = createDto.getUserId();
         UUID itemId = createDto.getItemId();
@@ -62,6 +67,7 @@ public class OrderController {
     }
 
     @PatchMapping("/{orderId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER')")
     public OrderDto update(@PathVariable(name = "orderId") UUID id,
                                 @RequestBody OrderUpdateDto updateDto){
         return Optional.ofNullable(updateDto)
@@ -72,11 +78,13 @@ public class OrderController {
     }
 
     @DeleteMapping("/{orderId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER')")
     public void delete(@PathVariable(name = "orderId") UUID id){
         orderService.delete(id);
     }
 
     @PostMapping("/{orderId}/reviews/{itemId}")
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
     public ReviewDto createReview(@Valid @PathVariable(name = "itemId") UUID itemId,
                                   @PathVariable(name = "orderId") UUID orderId,
                                   @RequestBody ReviewCreateDto createDto){

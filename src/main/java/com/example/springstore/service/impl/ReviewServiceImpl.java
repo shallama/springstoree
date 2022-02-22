@@ -1,9 +1,7 @@
 package com.example.springstore.service.impl;
 
-import com.example.springstore.domain.entity.Item;
-import com.example.springstore.domain.entity.Order;
-import com.example.springstore.domain.entity.Rating;
-import com.example.springstore.domain.entity.Review;
+import com.example.springstore.domain.dto.review.ReviewSearchRequest;
+import com.example.springstore.domain.entity.*;
 import com.example.springstore.domain.exeption.*;
 import com.example.springstore.domain.mapper.ReviewMapper;
 import com.example.springstore.repository.OrderRepository;
@@ -14,11 +12,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.Predicate;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -30,8 +33,8 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewMapper reviewMapper;
     private final ReviewRepository reviewRepository;
     private final UserService userService;
-    private final RatingService ratingService;
     private final DateService dateService;
+    private final ItemService itemService;
 
     @Override
     public Review get(UUID id) {
@@ -48,7 +51,8 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public Review update(UUID id, Review review) {
         LocalDate date = dateService.get();
-        Period period = Period.between(get(id).getReviewDate(), date);
+        Review oldReview = get(id);
+        Period period = Period.between(oldReview.getReviewDate(), date);
         Integer days = period.getDays();
         if (days < 1){
             return Optional.of(id)
@@ -69,19 +73,27 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Page<Review> getReviewByItem(Item item, Pageable pageable) {
-        return reviewRepository.findAllByItem(item, pageable);
-    }
-
-    @Override
-    public Page<Review> getReviewsByUser(UUID userId, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        return reviewRepository.findAllByUser(userService.get(userId), pageable);
-    }
-
-    @Override
-    public Page<Review> getReviewByRate(Integer rate, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by("reviewDate").descending());
-        return reviewRepository.findAllByItemRate(rate, pageable);
+    public Page<Review> getReviewList(ReviewSearchRequest searchRequest,Pageable pageable) {
+        Specification<Review> specification = (root, query, criteriaBuilder) -> {
+            List<Predicate> predicatesList = new ArrayList<>();
+            if (searchRequest.getUserId() != null){
+                Join<Review, User> userJoin = root.join("user");
+                User user = userService.get(searchRequest.getUserId());
+                Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+                predicatesList.add(userPredicate);
+            }
+            if (searchRequest.getItemId() != null){
+                Join<Review, Item> itemJoin = root.join("item");
+                Item item = itemService.get(searchRequest.getItemId());
+                Predicate itemPredicate = criteriaBuilder.equal(root.get("item"),item);
+                predicatesList.add(itemPredicate);
+            }
+            if (searchRequest.getRate() != null){
+                Predicate ratePredicate = criteriaBuilder.equal(root.get("itemRate"), searchRequest.getRate());
+                predicatesList.add(ratePredicate);
+            }
+            return criteriaBuilder.and(predicatesList.toArray(new Predicate[predicatesList.size()]));
+        };
+        return reviewRepository.findAll(specification, pageable);
     }
 }

@@ -12,10 +12,7 @@ import com.example.springstore.domain.exeption.OrderCantDeleteException;
 import com.example.springstore.domain.exeption.ReviewWasAddedException;
 import com.example.springstore.domain.mapper.OrderMapper;
 import com.example.springstore.repository.OrderRepository;
-import com.example.springstore.service.DateService;
-import com.example.springstore.service.ItemService;
-import com.example.springstore.service.OrderService;
-import com.example.springstore.service.ReviewService;
+import com.example.springstore.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,6 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final ItemService itemService;
     private final ReviewService reviewService;
     private final DateService dateService;
+    private final RatingService ratingService;
 
     @Override
     public Order get(UUID id) {
@@ -53,10 +51,11 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public Order create(Order order, UUID userId, UUID itemId) {
-        order.setUser(userService.get(userId));
-        if (order.getUser().getAddress() == null){
+        User user = userService.get(userId);
+        if (user.getAddress() == null){
             throw new AddressNotFoundException();
         } else {
+            order.setUser(user);
             order.setItem(itemService.get(itemId));
             return orderRepository.save(order);
         }
@@ -92,64 +91,52 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public Review createReview(UUID itemId, UUID userId, UUID orderId, Review review) {
         Order order = get(orderId);
         if (order.getIsReviewed()){
             throw new ReviewWasAddedException();
         }
-        Item item = itemService.get(itemId);
-        Integer rateSum = item.getRatingSum();
-        Integer rateCount = item.getRatingCount();
-        if (rateCount == null || rateSum == null){
-            rateCount = 0;
-            rateSum = 0;
-        }
-        item.setRatingSum(rateSum + review.getItemRate());
-        item.setRatingCount(rateCount++);
-        //check for updating item
+        Item item = itemService.updateRating(itemId, review.getItemRate());
         order.setIsReviewed(true);
-        //check for updating order
-        //orderService.update(orderId, order);
+        update(orderId, order);
         review.setItem(item);
-        review.setUser(userService.get(userId));
+        User user = userService.get(userId);
+        review.setUser(user);
         return reviewService.create(review);
     }
 
 
     @Override
-    public Page<Order> getOrdersList(OrderSearchRequest searchRequest, Integer pageNum, Integer pageSize) {
-        Pageable pageable = PageRequest.of(pageNum, pageSize);
-        Specification<Order> specification =  new Specification<Order>() {
-            @Override
-            public Predicate toPredicate(Root<Order> root, CriteriaQuery<?> query, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicatesList = new ArrayList<>();
+    public Page<Order> getOrdersList(OrderSearchRequest searchRequest, Pageable pageable) {
+        Specification<Order> specification = (Specification<Order>) (root, query, criteriaBuilder) -> {
+            List<Predicate> predicatesList = new ArrayList<>();
 
-                if (searchRequest.getUserId() != null){
-                    Join<Order, User> userJoin = root.join("user");
-                    User user = userService.get(searchRequest.getUserId());
-                    Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
-                    predicatesList.add(userPredicate);
-                }
-                if (searchRequest.getItemId() != null){
-                    Join<Order, Item> itemJoin = root.join("item");
-                    Item item = itemService.get(searchRequest.getItemId());
-                    Predicate itemPredicate = criteriaBuilder.equal(root.get("item"),item);
-                    predicatesList.add(itemPredicate);
-                }
-                if (searchRequest.getOrderStatus() != null){
-                    Predicate statusPredicate = criteriaBuilder.equal(root.get("orderStatus"), searchRequest.getOrderStatus());
-                    predicatesList.add(statusPredicate);
-                }
-                if (searchRequest.getOrderCompleteness() != null){
-                    Predicate completePredicate = criteriaBuilder.equal(root.get("orderCompleteness"), searchRequest.getOrderCompleteness());
-                    predicatesList.add(completePredicate);
-                }
-                if (searchRequest.getIsReviewed() != null){
-                    Predicate reviewedPredicate = criteriaBuilder.equal(root.get("isReviewed"), searchRequest.getIsReviewed());
-                    predicatesList.add(reviewedPredicate);
-                }
-                return criteriaBuilder.and(predicatesList.toArray(new Predicate[predicatesList.size()]));
+            if (searchRequest.getUserId() != null){
+                Join<Order, User> userJoin = root.join("user");
+                User user = userService.get(searchRequest.getUserId());
+                Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+                predicatesList.add(userPredicate);
             }
+            if (searchRequest.getItemId() != null){
+                Join<Order, Item> itemJoin = root.join("item");
+                Item item = itemService.get(searchRequest.getItemId());
+                Predicate itemPredicate = criteriaBuilder.equal(root.get("item"),item);
+                predicatesList.add(itemPredicate);
+            }
+            if (searchRequest.getOrderStatus() != null){
+                Predicate statusPredicate = criteriaBuilder.equal(root.get("orderStatus"), searchRequest.getOrderStatus());
+                predicatesList.add(statusPredicate);
+            }
+            if (searchRequest.getOrderCompleteness() != null){
+                Predicate completePredicate = criteriaBuilder.equal(root.get("orderCompleteness"), searchRequest.getOrderCompleteness());
+                predicatesList.add(completePredicate);
+            }
+            if (searchRequest.getIsReviewed() != null){
+                Predicate reviewedPredicate = criteriaBuilder.equal(root.get("isReviewed"), searchRequest.getIsReviewed());
+                predicatesList.add(reviewedPredicate);
+            }
+            return criteriaBuilder.and(predicatesList.toArray(new Predicate[predicatesList.size()]));
         };
         return orderRepository.findAll(specification, pageable);
     }
