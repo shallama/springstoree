@@ -25,7 +25,7 @@ public class User extends BaseEntity {
     private String phone;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private String pwd;
+    private String password;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "addressId")
     private Address address;

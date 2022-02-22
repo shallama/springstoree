@@ -1,5 +1,6 @@
 package com.example.springstore.controller;
 
+import com.example.springstore.domain.dto.itemgroup.GroupSearchRequest;
 import com.example.springstore.domain.dto.itemgroup.ItemGroupCreateDto;
 import com.example.springstore.domain.dto.itemgroup.ItemGroupDto;
 import com.example.springstore.domain.dto.itemgroup.ItemGroupUpdateDto;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,6 +32,7 @@ public class ItemGroupController {
     private final ItemGroupMapper groupMapper;
 
     @GetMapping("/{groupId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_SELLER')")
     public ItemGroupDto get(@PathVariable(name = "groupId") UUID id){
         return Optional.of(id)
                 .map(groupService::get)
@@ -37,6 +41,7 @@ public class ItemGroupController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_SELLER')")
     public ItemGroupDto create(@Valid @RequestBody ItemGroupCreateDto createDto){
         return Optional.ofNullable(createDto)
                 .map(groupMapper::fromCreateDto)
@@ -46,6 +51,7 @@ public class ItemGroupController {
     }
 
     @PatchMapping("/{groupId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_SELLER')")
     public ItemGroupDto update(@PathVariable(name = "groupId") UUID id,
                                 @RequestBody ItemGroupUpdateDto updateDto){
         return Optional.ofNullable(updateDto)
@@ -56,25 +62,17 @@ public class ItemGroupController {
     }
 
     @DeleteMapping("/{groupId}")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_SELLER')")
     public void delete(@PathVariable(name = "groupId") UUID id){
         groupService.delete(id);
     }
 
-    @GetMapping("/{availability}/{pageNum}/{pageSize}")
-    public Page<ItemGroupDto> getGroupByItemAvailability(@PathVariable(name = "availability") Boolean availability,
-                                                         @PathVariable(name = "pageNum") Integer pageNum,
-                                                         @PathVariable(name = "pageSize") Integer pageSize){
-        return Optional.ofNullable(availability)
-                .map(curr -> groupService.getGroupsByItemAvailability(availability, pageNum, pageSize))
-                .map(groupMapper::listToDto)
-                .orElseThrow();
-    }
-
-    @GetMapping("/{pageNum}/{pageSize}")
-    public Page<ItemGroupDto> getGroupsList(@PathVariable(name = "pageNum") Integer pageNum,
-                                            @PathVariable(name = "pageSize") Integer pageSize){
-        return Optional.ofNullable(pageNum)
-                .map(curr -> groupService.getGroupsList(curr, pageSize))
+    @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') || hasAuthority('ROLE_CUSTOMER') || hasAuthority('ROLE_SELLER')")
+    public Page<ItemGroupDto> getGroupsList(@RequestBody GroupSearchRequest searchRequest,
+                                            Pageable pageable){
+        return Optional.ofNullable(searchRequest)
+                .map(curr -> groupService.getGroupsList(curr,pageable))
                 .map(groupMapper::listToDto)
                 .orElseThrow();
     }

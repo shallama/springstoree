@@ -17,5 +17,5 @@ public class UserUpdateDto {
     @Email
     String email;
     String phone;
-    String pwd;
+    String password;
 }

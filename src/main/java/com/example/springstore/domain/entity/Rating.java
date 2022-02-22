@@ -10,8 +10,9 @@ import javax.persistence.*;
 @Setter
 @Table(name = "ratings")
 public class Rating extends BaseEntity{
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "itemId")
     private Item item;
-    private Integer rate;
+    private Integer rateSum;
+    private Integer rateCount;
 }

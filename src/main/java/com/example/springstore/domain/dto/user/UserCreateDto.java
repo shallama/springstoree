@@ -24,5 +24,5 @@ public class UserCreateDto {
     String email;
     String phone;
     Role role;
-    String pwd;
+    String password;
 }
