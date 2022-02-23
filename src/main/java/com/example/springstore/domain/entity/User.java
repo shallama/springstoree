@@ -13,7 +13,11 @@ import java.util.UUID;
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.CascadeType.REFRESH;
 
-
+/**
+ *  User entity
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Entity
 @Getter
 @Setter

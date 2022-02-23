@@ -9,7 +9,11 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.UUID;
-
+/**
+ *  Base entity
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Getter
 @MappedSuperclass
 @Setter(value = AccessLevel.PRIVATE)

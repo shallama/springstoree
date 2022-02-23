@@ -4,7 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-
+/**
+ *  Rating entity
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Entity
 @Getter
 @Setter

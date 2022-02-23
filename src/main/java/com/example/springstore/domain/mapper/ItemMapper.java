@@ -11,7 +11,11 @@ import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Mapper for item group
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Mapper
 public interface ItemMapper {
     @Mapping(target = "id", ignore = true)

@@ -12,7 +12,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
-
+/**
+ *  Repository for work with order DB table
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Repository
 public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecificationExecutor<Order> {
 }

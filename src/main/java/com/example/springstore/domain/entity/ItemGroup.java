@@ -13,7 +13,11 @@ import java.util.List;
 
 import static javax.persistence.CascadeType.*;
 import static javax.persistence.CascadeType.REFRESH;
-
+/**
+ *  Item group entity
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Entity
 @Getter
 @Setter

@@ -5,7 +5,10 @@ import com.example.springstore.domain.entity.Address;
 import com.example.springstore.domain.entity.enums.Role;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
-
+/**
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Value
 @Builder
 @Jacksonized

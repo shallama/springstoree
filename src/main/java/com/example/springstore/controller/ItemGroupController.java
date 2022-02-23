@@ -22,7 +22,10 @@ import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.HttpStatus.OK;
-
+/**
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @RestController
 @RequestMapping(path = "item-groups")
 @RequiredArgsConstructor

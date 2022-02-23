@@ -11,7 +11,11 @@ import com.example.springstore.domain.entity.Item;
 import com.example.springstore.domain.entity.ItemGroup;
 import org.mapstruct.*;
 import org.springframework.data.domain.Page;
-
+/**
+ *  Mapper for item
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Mapper
 public interface ItemGroupMapper {
     @Mapping(target = "id", ignore = true)

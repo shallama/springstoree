@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
-
+/**
+ *  @author tagir
+ *  @since 20.02.2022
+ */
 @RestController
 @RequestMapping(path = "auth")
 @RequiredArgsConstructor

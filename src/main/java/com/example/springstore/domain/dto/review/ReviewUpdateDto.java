@@ -10,7 +10,10 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.util.UUID;
-
+/**
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Value
 @Builder
 @Jacksonized

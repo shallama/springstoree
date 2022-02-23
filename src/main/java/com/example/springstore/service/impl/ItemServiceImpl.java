@@ -17,7 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.*;
 import java.util.*;
-
+/**
+ *  item service implementation
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -58,6 +62,9 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void delete(UUID id) {
+        Item item = get(id);
+        Rating rating = ratingService.getByItem(item);
+        ratingService.delete(rating.getId());
         itemRepository.deleteById(id);
     }
 

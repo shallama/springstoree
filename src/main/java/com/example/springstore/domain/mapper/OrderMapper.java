@@ -9,7 +9,11 @@ import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-
+/**
+ *  Mapper for order
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Mapper
 public interface OrderMapper {
     @Mapping(target = "id", ignore = true)

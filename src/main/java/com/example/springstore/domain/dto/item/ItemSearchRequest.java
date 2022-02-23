@@ -7,7 +7,10 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 import java.util.UUID;
-
+/**
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Value
 @Builder
 @Jacksonized

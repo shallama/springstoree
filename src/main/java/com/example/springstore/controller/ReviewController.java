@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
-
+/**
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reviews")

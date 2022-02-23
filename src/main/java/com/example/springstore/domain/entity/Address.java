@@ -9,6 +9,11 @@ import javax.persistence.FetchType;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.UUID;
+/**
+ *  Address entity
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Entity
 @Getter
 @Setter

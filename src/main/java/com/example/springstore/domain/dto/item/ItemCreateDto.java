@@ -10,7 +10,10 @@ import javax.validation.constraints.AssertFalse;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.UUID;
-
+/**
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Value
 @Builder
 @Jacksonized
