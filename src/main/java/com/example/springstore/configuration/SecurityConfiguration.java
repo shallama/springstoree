@@ -37,14 +37,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     * Add for configuration ignoring of auth enpoints
+     * Add for configuration ignoring of auth endpoints
      * @param web
      * @throws Exception
      */
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
-        web.ignoring().antMatchers("/auth/login", "/auth/sign-up");
+        web.ignoring().antMatchers("/auth/login",
+                                                "/auth/sign-up",
+                                                "/v3/api-docs",
+                                                "/configuration/ui",
+                                                "/swagger-resources/**",
+                                                "/configuration/security",
+                                                "/swagger-ui.html",
+                                                "/webjars/**");
     }
 
     /**

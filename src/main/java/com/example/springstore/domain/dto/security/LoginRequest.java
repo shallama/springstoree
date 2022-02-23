@@ -1,6 +1,7 @@
 package com.example.springstore.domain.dto.security;
 
 import com.example.springstore.validation.annotation.Email;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -15,8 +16,11 @@ import static lombok.AccessLevel.PRIVATE;
 @Builder
 @Jacksonized
 @AllArgsConstructor(access = PRIVATE)
+@Schema(name = "LoginRequest", description = "Info for login user")
 public class LoginRequest {
     @Email
+    @Schema(description = "User email")
     String username;
+    @Schema(description = "User password")
     String password;
 }

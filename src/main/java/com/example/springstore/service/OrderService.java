@@ -44,7 +44,7 @@ public interface OrderService {
 
     /**
      * Delete order by id if order don't have PREPARATION order status
-     * and a day has not passed since the order was placed
+     * and a day has not passed since the order was created
      * @param id
      */
     void delete(UUID id);
