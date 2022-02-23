@@ -1,5 +1,6 @@
 package com.example.springstore.domain.dto.item;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,13 +19,24 @@ import java.util.UUID;
 @Builder
 @Jacksonized
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Schema(name = "ItemCreateDto", description = "Info for create item")
 public class ItemCreateDto {
     @NotBlank
+    @Schema(description = "item name")
     String itemName;
+
     @NotNull
+    @Schema(description = "Item group id",
+            required = true,
+            maxLength = 36,
+            minLength = 36)
     UUID groupId;
+
+    @Schema(description = "Price")
     Integer price;
     @NotBlank
+    @Schema(description = "Description")
     String description;
+    @Schema(description = "Availability")
     Boolean availability;
 }
