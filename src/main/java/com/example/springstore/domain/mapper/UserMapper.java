@@ -7,7 +7,11 @@ import com.example.springstore.domain.dto.user.UserUpdateDto;
 import com.example.springstore.domain.entity.User;
 import org.mapstruct.*;
 import org.springframework.stereotype.Component;
-
+/**
+ *  Mapper for user
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Mapper
 public interface UserMapper {
     @Mapping(target = "id", ignore = true)

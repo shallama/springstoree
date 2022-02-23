@@ -11,7 +11,10 @@ import javax.validation.constraints.*;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.UUID;
-
+/**
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Value
 @Builder
 @Jacksonized

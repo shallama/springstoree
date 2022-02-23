@@ -29,7 +29,11 @@ import java.time.Period;
 import java.util.*;
 
 import static com.example.springstore.domain.entity.enums.Status.*;
-
+/**
+ *  Order service implementation
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

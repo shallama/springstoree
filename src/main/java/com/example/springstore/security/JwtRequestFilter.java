@@ -20,7 +20,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-
+/**
+ *  Filter to check validity of the token
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Component
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

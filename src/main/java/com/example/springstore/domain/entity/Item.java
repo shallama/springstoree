@@ -8,7 +8,11 @@ import javax.persistence.*;
 import java.util.*;
 
 import static javax.persistence.CascadeType.*;
-
+/**
+ *  Item entity
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Entity
 @Getter
 @Setter

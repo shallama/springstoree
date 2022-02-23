@@ -8,7 +8,11 @@ import org.mapstruct.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
-
+/**
+ *  Mapper for review
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Mapper
 public interface ReviewMapper {
     @Mapping(target = "id", ignore = true)

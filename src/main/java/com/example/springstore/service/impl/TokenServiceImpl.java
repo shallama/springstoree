@@ -9,7 +9,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.HashMap;
-
+/**
+ * Token service implementation
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Service
 public class TokenServiceImpl implements TokenService {
 

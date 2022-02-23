@@ -13,7 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+/**
+ * Rating service implementation
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -35,6 +39,11 @@ public class RatingServiceImpl implements RatingService {
     @Override
     public Rating update(Rating rating) {
         return ratingRepository.save(rating);
+    }
+
+    @Override
+    public void delete(UUID id) {
+        ratingRepository.deleteById(id);
     }
 
     @Override

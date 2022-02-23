@@ -14,7 +14,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
-
+/**
+ * Address service implementation
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

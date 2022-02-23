@@ -24,7 +24,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
+/**
+ *  Item group service implementation
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)

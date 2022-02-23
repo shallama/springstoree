@@ -16,17 +16,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
+/**
+ * Authentication service implementation
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
     private final PasswordEncoder passwordEncoder;
-
     private final UserService userService;
-
     private final TokenService tokenService;
-
     private final UserRepository userRepository;
 
     @Override

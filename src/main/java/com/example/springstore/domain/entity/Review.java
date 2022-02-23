@@ -5,7 +5,11 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-
+/**
+ *  Review entity
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Entity
 @Getter
 @Setter

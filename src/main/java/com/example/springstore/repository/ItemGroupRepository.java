@@ -10,6 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
+/**
+ *  Repository for work with itemGroup DB table
+ *  @author tagir
+ *  @since 15.01.2022
+ */
 @Repository
 public interface ItemGroupRepository extends JpaRepository<ItemGroup, UUID>, JpaSpecificationExecutor<ItemGroup> {
     Page<ItemGroup> findByIdIn(List<UUID> ids, Pageable pageable);
