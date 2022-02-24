@@ -2,6 +2,7 @@ package com.example.springstore.controller;
 
 import com.example.springstore.domain.dto.security.LoginRequest;
 import com.example.springstore.domain.dto.user.UserCreateDto;
+import com.example.springstore.domain.exeption.UserNotLoginException;
 import com.example.springstore.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -55,6 +56,6 @@ public class AuthController {
     public String signUp(@RequestBody UserCreateDto userCreateDto) {
         return Optional.ofNullable(userCreateDto)
                 .map(authService::signUp)
-                .orElseThrow();
+                .orElseThrow(() -> new UserNotLoginException());
     }
 }

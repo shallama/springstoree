@@ -20,6 +20,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.same;
 
+/**
+ * Test for authentication service
+ * @author tagir
+ * @since 20.02.2022
+ */
 @ExtendWith(MockitoExtension.class)
 public class AuthServiceImplTest {
     @InjectMocks
@@ -33,6 +38,9 @@ public class AuthServiceImplTest {
     @Mock
     private UserRepository userRepository;
 
+    /**
+     * When user email there are not in data base
+     */
     @Test
     public void testUserNotFoundByEmail() {
         String username = "username";
@@ -46,6 +54,9 @@ public class AuthServiceImplTest {
         }
     }
 
+    /**
+     * When the entered password and existing password matched
+     */
     @Test
     public void testMatchPasswordTrue() {
         String username = "username";
@@ -64,6 +75,9 @@ public class AuthServiceImplTest {
         Assertions.assertEquals(exceptedToken, result);
     }
 
+    /**
+     * When the entered password and existing password did not matched
+     */
     @Test
     public void testMatchPasswordFalse() {
         String username = "username";

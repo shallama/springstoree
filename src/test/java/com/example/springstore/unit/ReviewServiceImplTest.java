@@ -18,7 +18,11 @@ import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDate;
 import java.util.UUID;
-
+/**
+ * Test for review service
+ * @author tagir
+ * @since 20.02.2022
+ */
 @ExtendWith(MockitoExtension.class)
 public class ReviewServiceImplTest {
     @InjectMocks
@@ -34,6 +38,9 @@ public class ReviewServiceImplTest {
     @Mock
     private ItemService itemService;
 
+    /**
+     * When client want to get review list by different parameters
+     */
     @Test
     public void getReviewListWithAllArguments(){
         Pageable pageable = PageRequest.of(0, 50);

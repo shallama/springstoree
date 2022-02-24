@@ -22,7 +22,11 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
-
+/**
+ * Tests for item service
+ * @author tagir
+ * @since 20.02.2022
+ */
 @ExtendWith(MockitoExtension.class)
 public class ItemServiceImplTest {
     @InjectMocks
@@ -36,6 +40,9 @@ public class ItemServiceImplTest {
     @Mock
     private RatingService ratingService;
 
+    /**
+     * When item was created
+     */
     @Test
     public  void itemCreateService(){
         Item item = new Item();
@@ -50,6 +57,9 @@ public class ItemServiceImplTest {
         Mockito.verify(ratingService, Mockito.times(1)).create(rating);
     }
 
+    /**
+     * When client want to get item list by different parameters
+     */
     @Test
     public void getItemListWithAllParams(){
         Pageable pageable = PageRequest.of(0, 50);

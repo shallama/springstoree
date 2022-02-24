@@ -26,7 +26,11 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.fail;
-
+/**
+ * Test for order service
+ * @author tagir
+ * @since 20.02.2022
+ */
 @ExtendWith(MockitoExtension.class)
 public class OrderServiceImplTest {
     @InjectMocks
@@ -34,18 +38,11 @@ public class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepository;
     @Mock
-    private OrderMapper orderMapper;
-    @Mock
     private UserServiceImpl userService;
-    @Mock
-    private ItemService itemService;
-    @Mock
-    private ReviewService reviewService;
-    @Mock
-    private DateService dateService;
-    @Mock
-    private RatingService ratingService;
 
+    /**
+     * When address was not found
+     */
     @Test
     public void addressNotFound(){
         Order order = new Order();
@@ -61,6 +58,9 @@ public class OrderServiceImplTest {
         }
     }
 
+    /**
+     * When review was added on current order
+     */
     @Test
     public void failedCreateReview(){
         Order order = new Order();
@@ -78,6 +78,9 @@ public class OrderServiceImplTest {
         }
     }
 
+    /**
+     * When client want to get order list by different parameters
+     */
     @Test
     public void getOrderListWithAllArguments(){
         Pageable pageable = PageRequest.of(0, 50);
@@ -93,23 +96,4 @@ public class OrderServiceImplTest {
         orderServiceImpl.getOrdersList(searchRequest, pageable);
     }
 
-    /*@Test
-    public void successCreatedReview(){
-        Order order = new Order();
-        order.setIsReviewed(false);
-        OrderServiceImpl service = Mockito.spy(orderServiceImpl);
-        Item item = new Item();
-        User user = new User();
-        UUID userId = UUID.randomUUID();
-        UUID itemId = UUID.randomUUID();
-        UUID orderId = UUID.randomUUID();
-        Review review = new Review();
-        review.setItemRate(5);
-        Mockito.doReturn(item).when(itemService).updateRating(itemId, review.getItemRate());
-        Mockito.doReturn(order).when(service).get(orderId);
-        Mockito.when(userService.get(userId)).thenReturn(user);
-        Mockito.doReturn(order).when(service).update(orderId, order);
-        Review gotReview = orderServiceImpl.createReview(itemId, userId, orderId, review);
-        Assertions.assertEquals(gotReview, review);
-    }*/
 }

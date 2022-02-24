@@ -44,9 +44,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         super.configure(web);
-        web.ignoring().antMatchers("/auth/login",
-                                                "/auth/sign-up",
-                                                "/v3/api-docs",
+        web.ignoring().antMatchers("/auth/login", "/auth/sign-up", "/v3/api-docs",
                                                 "/configuration/ui",
                                                 "/swagger-resources/**",
                                                 "/configuration/security",
